@@ -17,7 +17,7 @@ services:
 
   mktfy.db:
     restart: on-failure
-    image: "mdillon/postgis.11"
+    image: "mdillon/postgis:11"
     container_name: "mktfy.db"
     environment:
         - POSTGRES_USER=devdbuser

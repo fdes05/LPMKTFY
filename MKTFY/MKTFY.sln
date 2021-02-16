@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MKTFY", "MKTFY\MKTFY.csproj
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{73FB7026-D358-4DA9-A0BB-02CCFB33D6E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MKTFY.Models", "MKTFY.Models\MKTFY.Models.csproj", "{9AA71D5D-88BE-41B6-B7A5-ECE1F1D6FD93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MKTFY.App", "MKTFY.App\MKTFY.App.csproj", "{3DD171F9-550A-475C-AFF7-1F98BDCD458B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{73FB7026-D358-4DA9-A0BB-02CCFB33D6E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73FB7026-D358-4DA9-A0BB-02CCFB33D6E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73FB7026-D358-4DA9-A0BB-02CCFB33D6E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AA71D5D-88BE-41B6-B7A5-ECE1F1D6FD93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AA71D5D-88BE-41B6-B7A5-ECE1F1D6FD93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AA71D5D-88BE-41B6-B7A5-ECE1F1D6FD93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AA71D5D-88BE-41B6-B7A5-ECE1F1D6FD93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DD171F9-550A-475C-AFF7-1F98BDCD458B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DD171F9-550A-475C-AFF7-1F98BDCD458B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DD171F9-550A-475C-AFF7-1F98BDCD458B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DD171F9-550A-475C-AFF7-1F98BDCD458B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
