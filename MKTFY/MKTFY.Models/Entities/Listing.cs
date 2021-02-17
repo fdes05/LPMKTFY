@@ -8,10 +8,11 @@ namespace MKTFY.Models.Entities
 {
     public class Listing : BaseEntity
     {
-        public Listing(ListingAddVM src)
+        public Listing() : base() { }
+        public Listing(ListingAddVM src) : base()
         {
             Address = src.Address;
-            Description = src.Description;
+            Description = src.Description;            
         }
         [Required]
         public string Address { get; set; }

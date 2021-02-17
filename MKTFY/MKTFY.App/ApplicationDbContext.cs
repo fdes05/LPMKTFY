@@ -13,6 +13,6 @@ namespace MKTFY.App
 
         }
 
-        public DbSet<Listing> Listing { get; set; }
+        public DbSet<Listing> Listings { get; set; }
     }
 }
