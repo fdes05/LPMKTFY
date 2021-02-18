@@ -1,0 +1,73 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using MKTFY.App.Repositories.Interfaces;
+using MKTFY.Models.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace MKTFY.Controllers
+{
+    // If the 'Route' is declared at the class level it will apply to all the methods below. In this case all api endpoints 
+    // will start with '/api/listing'.
+    // The ApiController annotation will make sure the api endpoint returns JSON
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ListingController : ControllerBase  // ControllerBase is a parent class of 'Controller' with less functions.
+    {
+        private readonly IListingRepository _listingRepository;
+        // The constructor and the property (field) above are for Dependency Injection to handle the instance of this 
+        // ListingController. The constructor needs an interface as a parameter in order for DI to work.
+        public ListingController(IListingRepository listingRepository)
+        {
+            _listingRepository = listingRepository;
+        }
+        // The post annotation requires that we define where the data is coming from in the method signature and add the 
+        // appropriate object (in this case ListingAddVM) to map the JSON data coming from the front-end.
+        [HttpPost]
+        public async Task<ActionResult<ListingVM>> Create([FromBody] ListingAddVM data)
+        {
+            try
+            {
+                // Ok() and BadReqest() methods below are from the ControllerBase class and provide standard HTTP responses 
+                // back to the front-end client.
+                var result = await _listingRepository.Create(data);
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<ListingVM>> GetAll()
+        {
+            try
+            {
+                var results = await _listingRepository.GetAll();
+                return Ok(results);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        // This HTTP request will use the class defined annotation of '/api/listing' and then add the 'id' part that needs to
+        // come from the client so it's '/api/listing/{id}'. The method needs to take that Id in through the [FromRoute] part.
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ListingVM>> Get([FromRoute] Guid id)
+        {
+            try
+            {
+                var result = await _listingRepository.Get(id);
+                return Ok(result);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+    }
+}

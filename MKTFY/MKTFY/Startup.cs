@@ -42,7 +42,7 @@ namespace MKTFY
 
             services.AddControllers();
 
-            // This is to add Dependency Injection. This is why we need the Interface IListingRepository
+            // This is to add Dependency Injection for the ListingRepository. This is why we need the Interface IListingRepository
             services.AddScoped<IListingRepository, ListingRepository>();
         }
 
