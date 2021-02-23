@@ -12,6 +12,22 @@ services:
         - "33001:443"
     environment:
         - ConnectionStrings__DefaultConnection=Server=mktfy.db;Database=devdb;User Id=devdbuser;Password=devdbpassword
+        - Identity__Authority=http://mktfy.auth
+    depends_on:
+        - "mktfy.db"
+
+  mktfy.auth:
+    image: ${DOCKER_REGISTRY-}mktfyauth
+    container_name: "mktfy.auth"
+    build:
+      context: .
+      dockerfile: MKTFY.Auth/Dockerfile
+    ports:
+        - "33005:80"
+        - "33006:443"
+    environment:
+        - ConnectionStrings__DefaultConnection=Server=mktfy.db;Database=devdb;User Id=devdbuser;Password=devdbpassword
+        - Identity__Authority=http://mktfy.auth
     depends_on:
         - "mktfy.db"
 
