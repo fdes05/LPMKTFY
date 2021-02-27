@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MKTFY.App.Repositories.Interfaces;
 using MKTFY.Models.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MKTFY.Controllers
@@ -14,6 +13,8 @@ namespace MKTFY.Controllers
     // The ApiController annotation will make sure the api endpoint returns JSON
     [Route("api/[controller]")]
     [ApiController]
+    // This is to make sure only API accesses are allowed for users that have an access token (bearer) and have a role of 'member'
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "member")]
     public class ListingController : ControllerBase  // ControllerBase is a parent class of 'Controller' with less functions.
     {
         private readonly IListingRepository _listingRepository;

@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MKTFY.App;
+using MKTFY.App.Seeds;
+using MKTFY.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +28,15 @@ namespace MKTFY
                 var services = scope.ServiceProvider;
                 try
                 {
+                    // This is to add the UserManager and RoleManager to the program startup so that it gets applied
+                    // when the application gets loaded. Alternatively, this could be done through DB Migration but more complicated
+                    var userManager = services.GetRequiredService<UserManager<User>>();
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     var context = services.GetRequiredService<ApplicationDbContext>();
 
                     context.Database.Migrate();
+                    // This async function is required to add the seeder users and roles at the program start
+                    Task.Run(async () => await UserAndRoleSeeder.SeedUsersAndRoles(roleManager, userManager)).Wait();
                 }
                 catch (Exception ex)
                 {

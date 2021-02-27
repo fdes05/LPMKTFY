@@ -45,18 +45,19 @@ namespace MKTFY
             // Add Identity Framework
             services.AddIdentity<User, IdentityRole>(options =>
             {
+                // Add password requirements for users that register
                 options.Password.RequiredLength = 6;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireDigit = true;
             })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
-
+                .AddEntityFrameworkStores<ApplicationDbContext>() // This adds the AppDbContext so the Identities get saved in our DB
+                .AddDefaultTokenProviders(); // In the test environment this is fine but in production it needs a verified Token provider 
+            
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
-                {
+                {   // This is the same Authority we set in the docker compose file as `http://mktfy.auth`.
                     options.Authority = Configuration.GetSection("Identity").GetValue<string>("Authority");
                     //Name of the API Resource
                     options.ApiName = "mktfyapi";
@@ -67,6 +68,8 @@ namespace MKTFY
 
             // This is to add Dependency Injection for the ListingRepository. This is why we need the Interface IListingRepository
             services.AddScoped<IListingRepository, ListingRepository>();
+            // This will add the Dependency Injection for the UserRepository.
+            services.AddScoped<IUserRepository, UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

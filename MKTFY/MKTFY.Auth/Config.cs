@@ -10,6 +10,8 @@ namespace MKTFY.Auth
 {
     public static class Config
     {
+        // The IEnumerable is the return type that is expected 'AddInMemoryIdentityResources' in the Startup file
+        // The IEnumerable is implemented by 'List' so we're returning a list which has access to the super object (IEnumerable)
         public static IEnumerable<IdentityResource> IdentityResources =>
             new List<IdentityResource>
             {
@@ -18,6 +20,7 @@ namespace MKTFY.Auth
                 new IdentityResource("roles", new[] { JwtClaimTypes.Role })
             };
 
+        // Defining the API Resources static method (this way the Startup class can just use the method) so the startup class can access it
         public static IEnumerable<ApiResource> ApiResources =>
             new List<ApiResource>
             {
@@ -29,6 +32,7 @@ namespace MKTFY.Auth
                 }
             };
 
+        // Defining ApiScopes method for the statup class. 
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
             {
@@ -47,7 +51,7 @@ namespace MKTFY.Auth
                     {
                         new Secret("UzKjRFnAHffxUFati8HMjSEzwMGgGhmn".Sha256())
                     },
-                    AllowedScopes = { "mktfyapi.scope", IdentityServerConstants.StandardScopes.OpenId }
+                    AllowedScopes = { "mktfyapi.scope", "roles", IdentityServerConstants.StandardScopes.OpenId }
                 }
             };
     }
