@@ -21,6 +21,7 @@ namespace MKTFY
         {
             // This is to separate the 'CreateHostBuilder(args).Build().Run()' into two separate steps in 
             // order to do the database migration part to create the db schema on the db server.
+            
             var host = CreateHostBuilder(args).Build();
 
             using(var scope = host.Services.CreateScope())

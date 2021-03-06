@@ -16,5 +16,7 @@ namespace MKTFY.App.Repositories.Interfaces
         Task<List<ListingVM>> GetAll();
 
         Task<ListingVM> Get(Guid Id);
+
+        Task<ListingVM> Edit(ListingEditVM updateListing);
     }
 }

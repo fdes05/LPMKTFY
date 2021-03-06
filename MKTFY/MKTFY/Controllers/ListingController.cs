@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MKTFY.App.Exceptions;
 using MKTFY.App.Repositories.Interfaces;
 using MKTFY.Models.ViewModels;
 using System;
@@ -59,16 +60,18 @@ namespace MKTFY.Controllers
         // come from the client so it's '/api/listing/{id}'. The method needs to take that Id in through the [FromRoute] part.
         [HttpGet("{id}")]
         public async Task<ActionResult<ListingVM>> Get([FromRoute] Guid id)
+        {            
+            var result = await _listingRepository.Get(id);
+            return Ok(result);            
+        }
+
+
+        [HttpPut("/edit/{id}")]
+        public async Task<ActionResult<ListingVM>> Edit([FromRoute] Guid id, [FromBody] ListingEditVM listingData)
         {
-            try
-            {
-                var result = await _listingRepository.Get(id);
-                return Ok(result);
-            }
-            catch
-            {
-                return BadRequest();
-            }
+            var result = await _listingRepository.Edit(listingData);
+            return Ok(result);
+
         }
     }
 }

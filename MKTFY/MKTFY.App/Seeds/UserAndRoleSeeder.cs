@@ -30,6 +30,9 @@ namespace MKTFY.App.Seeds
                     Email = "fabio.destefani+member@launchpadbyvog.com",
                     FirstName = "fabio.destefani",
                     LastName = "Member",
+                    Country = "Canada",
+                    City = "Calgary",
+                    Address = "5 Main Street"
                 };
                 IdentityResult result = await userManager.CreateAsync(user, "Password1");
 
@@ -45,6 +48,9 @@ namespace MKTFY.App.Seeds
                     Email = "fabio.destefani+admin@launchpadbyvog.com",
                     FirstName = "fabio.destefani",
                     LastName = "Admin",
+                    Country = "Canada",
+                    City = "Calgary",
+                    Address = "5 Main Street"
                 };
                 IdentityResult result = await userManager.CreateAsync(user, "Password1");
 

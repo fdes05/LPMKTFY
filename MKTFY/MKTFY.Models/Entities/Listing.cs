@@ -10,14 +10,32 @@ namespace MKTFY.Models.Entities
     {
         public Listing() : base() { }
         public Listing(ListingAddVM src) : base()
-        {
-            Address = src.Address;
-            Description = src.Description;            
+        {            
+            ProductName = src.ProductName;
+            Description = src.Description;
+            Category = src.Category;
+            Condition = src.Condition;
+            Price = src.Price;
+            Location = src.Location;
         }
+
         [Required]
-        public string Address { get; set; }
+        public string ProductName { get; set; }
+        
         [Required]
         public string Description { get; set; }
-       
+
+        [Required]
+        public string Category { get; set; }
+
+        [Required]
+        public string Condition { get; set; }
+
+        [Required]
+        public decimal Price { get; set; }
+
+        [Required]
+        public string Location { get; set; }
+
     }
 }

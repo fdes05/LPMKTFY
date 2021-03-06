@@ -17,6 +17,9 @@ using System.Threading.Tasks;
 using MKTFY.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using MKTFY.Middleware;
+using MKTFY.Services.Interfaces;
+using MKTFY.Services;
 
 namespace MKTFY
 {
@@ -70,6 +73,9 @@ namespace MKTFY
             services.AddScoped<IListingRepository, ListingRepository>();
             // This will add the Dependency Injection for the UserRepository.
             services.AddScoped<IUserRepository, UserRepository>();
+            // This will add DI for MailService
+            services.AddScoped<IMailService, MailService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,6 +89,9 @@ namespace MKTFY
            // app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // Global error handler
+            app.UseMiddleware<GlobalExceptionHandler>();
 
             app.UseAuthentication();
             app.UseAuthorization();

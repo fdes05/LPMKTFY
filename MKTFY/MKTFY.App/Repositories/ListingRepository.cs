@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MKTFY.App.Exceptions;
 using MKTFY.App.Repositories.Interfaces;
 using MKTFY.Models.Entities;
 using MKTFY.Models.ViewModels;
@@ -30,12 +31,31 @@ namespace MKTFY.App.Repositories
             return new ListingVM(entity);
         }
 
+        public async Task<ListingVM> Edit(ListingEditVM data)
+        {
+            var currentListing = await this.Get(data.Id);
+
+            // update the existing Listing           
+            {
+                currentListing.ProductName = data.ProductName;
+                currentListing.Description = data.Description;
+                currentListing.Category = data.Category;
+                currentListing.Condition = data.Condition;
+                currentListing.Price = data.Price;
+                currentListing.Location = data.Location;
+            }
+
+            return currentListing;
+        }
+
         public async Task<ListingVM> Get(Guid id)
         {
-            // Get the entity
-            // search term not working though: 
-            // var result = await from listing in _context.Listings where listing.id == id select listing;
-            var result = await _context.Listings.FirstAsync(i => i.Id == id);
+            // Get the entity           
+            var result = await _context.Listings.FirstOrDefaultAsync(i => i.Id == id);
+
+            if (result == null)    
+                throw new NotFoundException("Listing " + id + " not found");
+            
 
             return new ListingVM(result);
         }

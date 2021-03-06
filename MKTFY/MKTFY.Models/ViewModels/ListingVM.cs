@@ -1,6 +1,7 @@
 ﻿using MKTFY.Models.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace MKTFY.Models.ViewModels
@@ -10,11 +11,33 @@ namespace MKTFY.Models.ViewModels
         public ListingVM(Listing src)
         {
             Id = src.Id;
-            Address = src.Address;
+            ProductName = src.ProductName;
             Description = src.Description;
+            Category = src.Category;
+            Condition = src.Condition;
+            Price = src.Price;
+            Location = src.Location;            
         }
+
+        [Required]
         public Guid Id { get; set; }
-        public string Address { get; set; }       
+
+        [Required]
+        public string ProductName { get; set; }
+
+        [Required]
         public string Description { get; set; }
+
+        [Required]
+        public string Category { get; set; }
+
+        [Required]
+        public string Condition { get; set; }
+
+        [Required]
+        public decimal Price { get; set; }
+
+        [Required]
+        public string Location { get; set; }
     }
 }

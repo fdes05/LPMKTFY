@@ -20,7 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\MKTFY.App\MKTFY.App.csproj" />
     <ProjectReference Include="..\MKTFY.Models\MKTFY.Models.csproj" />
-    <ProjectReference Include="..\MKTFY\MKTFY.csproj" />
   </ItemGroup>
 
 </Project>
