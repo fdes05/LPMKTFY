@@ -5,14 +5,14 @@ using System.Text;
 
 namespace MKTFY.Models.Entities
 {
-    public class BaseEntity
+    public class BaseEntity<TId>
     {
         public BaseEntity()
         {
             Created = DateTime.UtcNow;
         }
         [Key]
-        public Guid Id { get; set; }
+        public TId Id { get; set; }
         [Required]
         public DateTime Created { get; set; }
     }

@@ -4,6 +4,7 @@ using MKTFY.App.Exceptions;
 using MKTFY.App.Repositories.Interfaces;
 using MKTFY.Models.Entities;
 using MKTFY.Models.ViewModels;
+using MKTFY.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +22,16 @@ namespace MKTFY.Controllers
     public class ListingController : ControllerBase  // ControllerBase is a parent class of 'Controller' with less functions.
     {
         private readonly IListingRepository _listingRepository;
+        private readonly IListingService _listingService;
+
         // The constructor and the property (field) above are for Dependency Injection to handle the instance of this 
         // ListingController. The constructor needs an interface as a parameter in order for DI to work.
-        public ListingController(IListingRepository listingRepository)
+        public ListingController(IListingRepository listingRepository, IListingService listingService)
         {
             _listingRepository = listingRepository;
+            _listingService = listingService;
         }
+
         // The post annotation requires that we define where the data is coming from in the method signature and add the 
         // appropriate object (in this case ListingAddVM) to map the JSON data coming from the front-end.
         [HttpPost]
@@ -45,6 +50,7 @@ namespace MKTFY.Controllers
             var models = results.Select(item => new ListingVM(item));
             return Ok(models);
         }
+
         // This HTTP request will use the class defined annotation of '/api/listing' and then add the 'id' part that needs to
         // come from the client so it's '/api/listing/{id}'. The method needs to take that Id in through the [FromRoute] part.
         [HttpGet("{id}")]
@@ -59,7 +65,7 @@ namespace MKTFY.Controllers
         public async Task<ActionResult<ListingVM>> Edit([FromRoute] Guid id, [FromBody] ListingEditVM listingEdit)
         {
             var updatedListing = new Listing(listingEdit);
-            var result = await _listingRepository.Edit(id, updatedListing);
+            var result = await _listingService.EditListing(id, updatedListing);
             return Ok(new ListingVM(result));
         }
 

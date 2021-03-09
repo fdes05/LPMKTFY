@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MKTFY.Models.Entities
 {
-    public class Listing : BaseEntity
+    public class Listing : BaseEntity<Guid>
     {
         public Listing() : base() { }
         public Listing(ListingAddVM src) : base()
