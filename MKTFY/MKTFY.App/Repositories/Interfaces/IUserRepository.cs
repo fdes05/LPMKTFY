@@ -1,4 +1,6 @@
-﻿using MKTFY.Models.Entities;
+﻿
+using Microsoft.AspNetCore.Mvc;
+using MKTFY.Models.Entities;
 using MKTFY.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -9,11 +11,10 @@ namespace MKTFY.App.Repositories.Interfaces
 {
     public interface IUserRepository
     {
-        Task<UserVM> GetByEmail(string email);
+        Task<User> GetByEmail(string email);
 
         Task<User> GetByUserName(string userName);
 
-        Task<bool> VerifyEmail(string email);
-        
+        Task<User> VerifyEmail(string userEmail);
     }
 }

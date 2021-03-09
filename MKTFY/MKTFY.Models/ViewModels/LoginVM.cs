@@ -6,7 +6,15 @@ using System.Text;
 namespace MKTFY.Models.ViewModels
 {
     public class LoginVM
-    {   
+    {
+        public LoginVM() { }
+        public LoginVM(string email, string password, string clientId)
+        {
+            Email = email;
+            Password = password;
+            ClientId = clientId;
+        }
+
         [Required]
         public string Email { get; set; }
 

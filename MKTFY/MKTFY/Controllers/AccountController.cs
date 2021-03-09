@@ -24,20 +24,19 @@ namespace MKTFY.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly SignInManager<User> _signinManager;
-        private readonly IConfiguration _configuration;
-        private readonly IUserRepository _userRepository;
+        private readonly SignInManager<User> _signinManager;        
         private readonly UserManager<User> _userManager;
         private readonly IMailService _mailService;
-        
-        public AccountController(SignInManager<User> signinManager, UserManager<User> userManager, IConfiguration configuration, IUserRepository userRepository, IMailService mailService)
+        private readonly IUserService _userService;
+
+        public AccountController(SignInManager<User> signinManager, UserManager<User> userManager, IMailService mailService, IUserService userService)
         {
-            _signinManager = signinManager;
-            _configuration = configuration;
-            _userRepository = userRepository;
+            _signinManager = signinManager;                      
             _userManager = userManager;
             _mailService = mailService;
+            _userService = userService;
         }
+
 
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponseVM>> Login([FromBody] LoginVM login)
@@ -49,136 +48,109 @@ namespace MKTFY.Controllers
                 return BadRequest("This user account has been locked out, please try again later");
             else if (!result.Succeeded)
                 return BadRequest("Invalid username/password");
+            
+            // Get user and generate userVM as LoginResponseVM further down requires token plus userVM
+            var user = await _userService.GetUser(login.Email);           
+            var tokenResponse = await _userService.GetAccessToken(login);
 
-            // Get the user profile
-            var user = await _userRepository.GetByEmail(login.Email);
-
-            // Get a token from the identity server
-            using (var httpClient = new HttpClient())
+            if (tokenResponse.IsError)
             {
-                var authority = _configuration.GetSection("Identity").GetValue<string>("Authority");
-
-                // Make the call to our identity server
-                var tokenResponse = await httpClient.RequestPasswordTokenAsync(new PasswordTokenRequest
-                {
-                    Address = authority + "/connect/token",
-                    UserName = login.Email,
-                    Password = login.Password,
-                    ClientId = login.ClientId,                     
-                    ClientSecret = "UzKjRFnAHffxUFati8HMjSEzwMGgGhmn",
-                    Scope = "mktfyapi.scope"
-
-                }).ConfigureAwait(false);
-
-                if (tokenResponse.IsError)
-                {
-                    return BadRequest(tokenResponse.Error);
-                    //return BadRequest("Unable to grant access to user account");
-                }
-
-                return Ok(new LoginResponseVM(tokenResponse, user));
+                return BadRequest(tokenResponse.Error);                
             }
+            return Ok(new LoginResponseVM(tokenResponse, new UserVM(user)));
         }
 
+
         [HttpPost("register/emailverification")]
-        public async void RegisterEmailVerification([FromBody] EmailVerificationVM email)
+        public async Task<EmailVerificationResponseVM> RegisterEmailVerification([FromBody] EmailVerificationVM email)
         {
+            // verify the email provided by the user does not already exist in DB
             var userEmail = email.Email;
-            var userExists = await _userRepository.VerifyEmail(userEmail);
+            var userExists = await _userService.VerifyEmail(userEmail).ConfigureAwait(false);
+
+            // Send email to user if email address does not exist in DB
             if (userExists == false)
             {
                 var to = email.Email;
-                var from = "fabio.destefani@launchpad.com";
+                var from = "fabio.destefani@launchpadbyvog.com";
                 var subject = "Email verification link";
                 var plainTextContent = "Please click on the link below to continue to the registration page.";
                 var htmlContent = $"<a href=http:www.mktfy.com/regisration/?email=`{to}`>Link to registration page</a>";
                 var response = await _mailService.SendEmail(to, from, subject, plainTextContent, htmlContent);
+                return new EmailVerificationResponseVM(response);
             }
+            throw new EmailVerificationException("Email already exists or is not valid. Use another email address.");
         }
+
 
         [HttpPost("register")]
-        public async Task<ActionResult<LoginResponseVM>> Register([FromBody] RegisterVM registerData)
+        public async Task<ActionResult<LoginResponseVM>> Register([FromBody] RegisterVM data)
         {
-            var user = new User();
-            // Create user and add info from user registration
-            user.UserName = registerData.Email;
-            user.Email = registerData.Email;
-            user.FirstName = registerData.FirstName;
-            user.LastName = registerData.LastName;
-            user.PhoneNumber = registerData.PhoneNumber;
-            user.Country = registerData.Country;
-            user.City = registerData.City;
-            user.Address = registerData.Address;
-
             // FOR TESTING TO REMOVE DUPLICATE USER! REMOVE WHEN DONE
-            var userDelete = await _userRepository.GetByUserName(registerData.Email);
-            await _userManager.DeleteAsync(userDelete);
-            // save user through User Manager
-            IdentityResult result = await _userManager.CreateAsync(user, registerData.Password);
-            if (result.Succeeded)
-                await _userManager.AddToRoleAsync(user, "member");
+            var userDelete = await _userService.GetUser(data.Email);
+            if (userDelete != null)
+            {
+                await _userManager.DeleteAsync(userDelete);
+            }
 
-            // Get the user profile
-            var userReturn = await _userRepository.GetByEmail(registerData.Email);
+            //Register User
+            IdentityResult result = await _userService.RegisterUser(data);
+
+            // Get the user profile and generate userVM for LoginResponseVM (requires token plus userVM)
+            var user = await _userService.GetUser(data.Email);
+            var userVM = new UserVM(user);
+
+            // Get a LoginVM object to pass to the GetAccessToken userService
+            LoginVM loginData = new LoginVM(data.Email, data.Password, data.ClientId);
 
             // Get a token from the identity server
-            using (var httpClient = new HttpClient())
+            var tokenResponse = await _userService.GetAccessToken(loginData);
+
+            if (tokenResponse.IsError)
             {
-                var authority = _configuration.GetSection("Identity").GetValue<string>("Authority");
-
-                // Make the call to our identity server
-                var tokenResponse = await httpClient.RequestPasswordTokenAsync(new PasswordTokenRequest
-                {
-                    Address = authority + "/connect/token",
-                    UserName = registerData.Email,
-                    Password = registerData.Password,
-                    ClientId = registerData.ClientId,
-                    ClientSecret = "UzKjRFnAHffxUFati8HMjSEzwMGgGhmn",
-                    Scope = "mktfyapi.scope"
-
-                }).ConfigureAwait(false);
-
-                if (tokenResponse.IsError)
-                {
-                    return BadRequest(tokenResponse.Error);
-                    //return BadRequest("Unable to grant access to user account");
-                }
-
-                return Ok(new LoginResponseVM(tokenResponse, userReturn));
+                return BadRequest(tokenResponse.Error);
+                //return BadRequest("Unable to grant access to user account");
             }
+
+            return Ok(new LoginResponseVM(tokenResponse, userVM));
         }
+
 
         [HttpPost("forgetPassword")]
         public async Task<ActionResult<ForgetPwResponseVM>> ForgetPassword([FromBody] ForgetPwVM forgetInfo)
         {
+            // Get username/email and user object
             var username = forgetInfo.Email.ToLower();
-            var user = await _userRepository.GetByUserName(username).ConfigureAwait(false);
+            var user = await _userService.GetUser(forgetInfo.Email).ConfigureAwait(false);
 
+            // Generate password reset token from userManager
             var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(false);
             var encodedEmail = HttpUtility.UrlEncode(username); // making sure special caracters are not misinterpeted
             var encodedToken = Uri.EscapeDataString(resetToken);
 
-            var apiKey = _configuration.GetSection("SendGrid").GetValue<string>("Key");
-            var client = new SendGridClient(apiKey);
-            var from = new EmailAddress("fabio.destefani@launchpadbyvog.com", "Admin");
+            // Send email to user with password reset token and link to reset password
+            var to = forgetInfo.Email;
+            var from = "fabio.destefani@launchpadbyvog.com";
             var subject = "Password Reset Link";
-            var to = new EmailAddress(username, "Valued Customer");
             var plainTextContent = "Please click on the link below to continue to the password reset page.";
             var htmlContent = $"<a href=http:www.mktfy.com/passwordReset/?email=`{encodedEmail}` & `{encodedToken}` >Link to reset password page</a>";
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            var response = await client.SendEmailAsync(msg);
+            var response = await _mailService.SendEmail(to, from, subject, plainTextContent, htmlContent);
 
-            var result = new ForgetPwResponseVM(resetToken, user);
+            var result = new ForgetPwResponseVM(response, resetToken, user);
 
             return result;
         }
 
+
         [HttpPost("resetPassword")]
         public async Task<ActionResult<ResetPwResponseVM>> ResetPassword([FromBody] ResetPwVM resetInfo)
         {
+            // Get username/email and user object
             var username = resetInfo.Email.ToLower();
-            var user = await _userRepository.GetByUserName(username).ConfigureAwait(false);
+            var user = await _userService.GetUser(resetInfo.Email).ConfigureAwait(false);
 
+            // Reset password with userManager using the reset token generated in 'forgetPassword()' and 
+            // using the new provided password from the front-end
             var resetPasswordResult = await _userManager.ResetPasswordAsync(
                 user, resetInfo.ResetToken, resetInfo.Password)
                 .ConfigureAwait(false);

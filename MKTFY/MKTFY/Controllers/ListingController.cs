@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using MKTFY.App.Exceptions;
 using MKTFY.App.Repositories.Interfaces;
+using MKTFY.Models.Entities;
 using MKTFY.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MKTFY.Controllers
@@ -30,48 +32,43 @@ namespace MKTFY.Controllers
         [HttpPost]
         public async Task<ActionResult<ListingVM>> Create([FromBody] ListingAddVM data)
         {
-            try
-            {
-                // Ok() and BadReqest() methods below are from the ControllerBase class and provide standard HTTP responses 
-                // back to the front-end client.
-                var result = await _listingRepository.Create(data);
-                return Ok(result);
-            }
-            catch
-            {
-                return BadRequest();
-            }
+            var entity = new Listing(data);
+
+            var result = await _listingRepository.Create(entity);
+            return Ok(new ListingVM(result));
         }
 
         [HttpGet]
         public async Task<ActionResult<ListingVM>> GetAll()
         {
-            try
-            {
-                var results = await _listingRepository.GetAll();
-                return Ok(results);
-            }
-            catch
-            {
-                return BadRequest();
-            }
+            var results = await _listingRepository.GetAll();
+            var models = results.Select(item => new ListingVM(item));
+            return Ok(models);
         }
         // This HTTP request will use the class defined annotation of '/api/listing' and then add the 'id' part that needs to
         // come from the client so it's '/api/listing/{id}'. The method needs to take that Id in through the [FromRoute] part.
         [HttpGet("{id}")]
         public async Task<ActionResult<ListingVM>> Get([FromRoute] Guid id)
-        {            
+        {
             var result = await _listingRepository.Get(id);
-            return Ok(result);            
+            return Ok(new ListingVM(result));
         }
 
 
-        [HttpPut("/edit/{id}")]
-        public async Task<ActionResult<ListingVM>> Edit([FromRoute] Guid id, [FromBody] ListingEditVM listingData)
+        [HttpPut("edit/{id}")]
+        public async Task<ActionResult<ListingVM>> Edit([FromRoute] Guid id, [FromBody] ListingEditVM listingEdit)
         {
-            var result = await _listingRepository.Edit(listingData);
-            return Ok(result);
+            var updatedListing = new Listing(listingEdit);
+            var result = await _listingRepository.Edit(id, updatedListing);
+            return Ok(new ListingVM(result));
+        }
 
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([FromRoute]Guid  id)
+        {
+            await _listingRepository.Delete(id);
+            return Ok();
         }
     }
 }

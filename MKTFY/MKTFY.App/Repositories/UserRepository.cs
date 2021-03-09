@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MKTFY.App.Repositories.Interfaces;
 using MKTFY.Models.Entities;
 using MKTFY.Models.ViewModels;
@@ -18,15 +19,12 @@ namespace MKTFY.App.Repositories
             _context = dbContext;
         }
 
-        public async Task<UserVM> GetByEmail(string email)
+        public async Task<User> GetByEmail(string email)
         {
             // Get the entity
             var result = await _context.Users.FirstOrDefaultAsync(user => user.Email == email);
 
-            // Build our view model
-            var model = new UserVM(result);
-
-            return model;
+            return result;
         }
 
         public async Task<User> GetByUserName(string userName)
@@ -37,14 +35,11 @@ namespace MKTFY.App.Repositories
             return result;
         }
 
-        public async Task<bool> VerifyEmail(string email)
+        public async Task<User> VerifyEmail(string userEmail)
         {
-            var result = await _context.Users.FirstOrDefaultAsync(user => user.Email == email);
-            if(result == null)
-            {
-                return false;
-            }
-            return true;
+            var result = await _context.Users.FirstOrDefaultAsync(user => user.Email == userEmail);
+
+            return result;
         }
     }
 }

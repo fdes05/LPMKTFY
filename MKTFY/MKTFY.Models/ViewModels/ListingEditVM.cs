@@ -7,8 +7,7 @@ using System.Text;
 namespace MKTFY.Models.ViewModels
 {
     public class ListingEditVM : ListingAddVM
-    {               
-        [Required]
-        public Guid Id { get; set; }                
+    {   
+        
     }
 }

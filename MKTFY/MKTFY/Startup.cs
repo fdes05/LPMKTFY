@@ -76,6 +76,8 @@ namespace MKTFY
             // This will add DI for MailService
             services.AddScoped<IMailService, MailService>();
 
+            services.AddScoped<IUserService, UserService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

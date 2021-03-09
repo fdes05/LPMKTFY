@@ -1,4 +1,5 @@
-﻿using MKTFY.Models.ViewModels;
+﻿using MKTFY.Models.Entities;
+using MKTFY.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,12 +12,14 @@ namespace MKTFY.App.Repositories.Interfaces
         // This Interface is needed for dependency injections that we setup in the Startup class under 'Configuration'
         // and 'services.AddScoped<Interface, Repository>()'
 
-        Task<ListingVM> Create(ListingAddVM src);
+        Task<Listing> Create(Listing entity);
 
-        Task<List<ListingVM>> GetAll();
+        Task<List<Listing>> GetAll();
 
-        Task<ListingVM> Get(Guid Id);
+        Task<Listing> Get(Guid Id);
 
-        Task<ListingVM> Edit(ListingEditVM updateListing);
+        Task<Listing> Edit(Guid id, Listing data);
+
+        Task Delete(Guid id);
     }
 }

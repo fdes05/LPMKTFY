@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MKTFY.App.Exceptions;
 using MKTFY.App.Repositories.Interfaces;
 using MKTFY.Models.Entities;
@@ -19,21 +20,18 @@ namespace MKTFY.App.Repositories
             _context = dbContext;
         }
 
-        public async Task<ListingVM> Create(ListingAddVM src)
-        {
-            // Create the new entity
-            var entity = new Listing(src);
-
+        public async Task<Listing> Create(Listing entity)
+        {      
             // Add and save the entity
             _context.Listings.Add(entity);
             await _context.SaveChangesAsync();
 
-            return new ListingVM(entity);
+            return entity;
         }
 
-        public async Task<ListingVM> Edit(ListingEditVM data)
+        public async Task<Listing> Edit(Guid id, Listing data)
         {
-            var currentListing = await this.Get(data.Id);
+            var currentListing = await this.Get(id);
 
             // update the existing Listing           
             {
@@ -45,31 +43,43 @@ namespace MKTFY.App.Repositories
                 currentListing.Location = data.Location;
             }
 
+            // Update and save the entity
+            _context.Listings.Update(currentListing);
+            await _context.SaveChangesAsync();
+
             return currentListing;
         }
 
-        public async Task<ListingVM> Get(Guid id)
+        public async Task<Listing> Get(Guid id)
         {
             // Get the entity           
             var result = await _context.Listings.FirstOrDefaultAsync(i => i.Id == id);
 
             if (result == null)    
-                throw new NotFoundException("Listing " + id + " not found");
+                throw new NotFoundException("item with id: " + id + " not found");
             
 
-            return new ListingVM(result);
+            return result;
         }
 
-        public async Task<List<ListingVM>> GetAll()
+        public async Task<List<Listing>> GetAll()
         {
             // Get the entities
-            var results = await _context.Listings.ToListAsync();
+            var results = await _context.Listings.ToListAsync();            
 
-            var models = new List<ListingVM>();
-            foreach (var entity in results)
-                models.Add(new ListingVM(entity));
+            return results;
+        }
 
-            return models;
+        public async Task Delete(Guid id)
+        {
+            // Get the entity           
+            var result = await _context.Listings.FirstOrDefaultAsync(i => i.Id == id);
+
+            if (result == null)
+                throw new NotFoundException("item with id: " + id + " not found");
+
+            _context.Listings.Remove(result);
+            await _context.SaveChangesAsync();
         }
     }
 }

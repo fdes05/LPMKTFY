@@ -13,7 +13,7 @@ services:
     environment:
         - ConnectionStrings__DefaultConnection=Server=mktfy.db;Database=devdb;User Id=devdbuser;Password=devdbpassword
         - Identity__Authority=http://mktfy.auth
-        - SendGrid__Key=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
+        - SendGrid__Key=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
     depends_on:
         - "mktfy.db"
 
