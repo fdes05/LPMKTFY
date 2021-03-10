@@ -50,7 +50,7 @@ namespace MKTFY.Controllers
                 return BadRequest("Invalid username/password");
             
             // Get user and generate userVM as LoginResponseVM further down requires token plus userVM
-            var user = await _userService.GetUser(login.Email);           
+            var user = await _userService.GetUserByEmail(login.Email);           
             var tokenResponse = await _userService.GetAccessToken(login);
 
             if (tokenResponse.IsError)
@@ -87,7 +87,7 @@ namespace MKTFY.Controllers
         public async Task<ActionResult<LoginResponseVM>> Register([FromBody] RegisterVM data)
         {
             // FOR TESTING TO REMOVE DUPLICATE USER! REMOVE WHEN DONE
-            var userDelete = await _userService.GetUser(data.Email);
+            var userDelete = await _userService.GetUserByEmail(data.Email);
             if (userDelete != null)
             {
                 await _userManager.DeleteAsync(userDelete);
@@ -97,7 +97,7 @@ namespace MKTFY.Controllers
             IdentityResult result = await _userService.RegisterUser(data);
 
             // Get the user profile and generate userVM for LoginResponseVM (requires token plus userVM)
-            var user = await _userService.GetUser(data.Email);
+            var user = await _userService.GetUserByEmail(data.Email);
             var userVM = new UserVM(user);
 
             // Get a LoginVM object to pass to the GetAccessToken userService
@@ -121,7 +121,7 @@ namespace MKTFY.Controllers
         {
             // Get username/email and user object
             var username = forgetInfo.Email.ToLower();
-            var user = await _userService.GetUser(forgetInfo.Email).ConfigureAwait(false);
+            var user = await _userService.GetUserByEmail(forgetInfo.Email);
 
             // Generate password reset token from userManager
             var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(false);
@@ -147,7 +147,7 @@ namespace MKTFY.Controllers
         {
             // Get username/email and user object
             var username = resetInfo.Email.ToLower();
-            var user = await _userService.GetUser(resetInfo.Email).ConfigureAwait(false);
+            var user = await _userService.GetUserByEmail(resetInfo.Email);
 
             // Reset password with userManager using the reset token generated in 'forgetPassword()' and 
             // using the new provided password from the front-end
@@ -167,6 +167,28 @@ namespace MKTFY.Controllers
                 return result;
             }
             return new ResetPwResponseVM(user.Email, "something went wrong. Please try again");
+        }
+
+
+        [HttpGet("profile/{id}")]
+        public async Task<ProfileVM> ViewProfile([FromRoute] string id)
+        {
+            // get the user
+            var user = await _userService.GetUserById(id);
+
+            // return the user object as a ProfileVM object
+            return new ProfileVM(user);
+        }
+
+
+        [HttpPut("profile/edit/{id}")]
+        public async Task<ProfileVM> EditProfile([FromRoute] string id, [FromBody] ProfileVM data)
+        {
+            // get the user
+            var updatedUser = await _userService.EditUserProfile(id, new User(data));
+
+            // return the user object as a ProfileVM object
+            return new ProfileVM(updatedUser);
         }
     }
 }

@@ -28,13 +28,20 @@ namespace MKTFY.Services
 
         }
 
-        public async Task<User> GetUser(string email)
+        public async Task<User> GetUserByEmail(string email)
         {
             // Get the user profile
             var user = await _userRepository.GetByEmail(email);
             return user;
         }
-           
+
+        public async Task<User> GetUserById(string id)
+        {
+            // Get the user profile
+            var user = await _userRepository.GetById(id);
+            return user;
+        }
+
         public async Task<TokenResponse> GetAccessToken(LoginVM login)
         {            
             // Get a token from the identity server
@@ -95,6 +102,21 @@ namespace MKTFY.Services
             {                
                 return true;
             }
+        }
+
+        
+        public async Task<User> EditUserProfile(string id, User data)
+        {
+            //add id to updated user object
+            data.Id = id;
+
+            //update the user profile through user manager            
+            var result = _userManager.UpdateAsync(data);  
+            
+            //get the updated user object from the UserRepo
+            var updatedUser = await _userRepository.GetById(data.Id);
+
+            return updatedUser;
         }
     }
 }

@@ -11,12 +11,16 @@ namespace MKTFY.Services.Interfaces
 {
     public interface IUserService
     {
-        public Task<User> GetUser(string email);
+        public Task<User> GetUserByEmail(string email);
+
+        public Task<User> GetUserById(string id);
 
         public Task<IdentityResult> RegisterUser(RegisterVM data);
 
         public Task<TokenResponse> GetAccessToken(LoginVM login);
 
         public Task<bool> VerifyEmail(string userEmail);
+
+        public Task<User> EditUserProfile(string id, User data);
     }
 }

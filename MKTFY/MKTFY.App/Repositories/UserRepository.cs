@@ -27,6 +27,14 @@ namespace MKTFY.App.Repositories
             return result;
         }
 
+        public async Task<User> GetById(string id)
+        {
+            // Get the entity
+            var result = await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
+
+            return result;
+        }
+
         public async Task<User> GetByUserName(string userName)
         {
             // Get the entity
@@ -41,5 +49,14 @@ namespace MKTFY.App.Repositories
 
             return result;
         }
+
+        //public async Task<User> EditUserProfile(User data)
+        //{
+            
+        //    var updatedUser = _context.Update(data);
+        //    await _context.SaveChangesAsync();
+
+        //    return updatedUser;
+        //}
     }
 }
