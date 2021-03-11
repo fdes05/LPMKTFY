@@ -1,4 +1,5 @@
 ﻿using IdentityModel.Client;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -169,8 +170,9 @@ namespace MKTFY.Controllers
             return new ResetPwResponseVM(user.Email, "something went wrong. Please try again");
         }
 
-
+        
         [HttpGet("profile/{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "member")]
         public async Task<ProfileVM> ViewProfile([FromRoute] string id)
         {
             // get the user
@@ -182,6 +184,7 @@ namespace MKTFY.Controllers
 
 
         [HttpPut("profile/edit/{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "member")]
         public async Task<ProfileVM> EditProfile([FromRoute] string id, [FromBody] ProfileVM data)
         {
             // get the user

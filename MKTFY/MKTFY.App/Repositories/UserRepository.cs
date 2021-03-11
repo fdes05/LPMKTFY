@@ -50,13 +50,15 @@ namespace MKTFY.App.Repositories
             return result;
         }
 
-        //public async Task<User> EditUserProfile(User data)
-        //{
-            
-        //    var updatedUser = _context.Update(data);
-        //    await _context.SaveChangesAsync();
+        public async Task<User> EditUserProfile(User data)
+        {
 
-        //    return updatedUser;
-        //}
+            var user = _context.Update(data);
+            await _context.SaveChangesAsync();
+
+            var updatedUser = await _context.Users.FindAsync(data.Id);
+
+            return updatedUser;
+        }
     }
 }

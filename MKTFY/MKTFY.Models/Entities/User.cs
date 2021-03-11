@@ -11,9 +11,10 @@ namespace MKTFY.Models.Entities
     {
         public User() { }
         public User(ProfileVM user)
-        {
+        {            
             FirstName = user.FirstName;
             LastName = user.LastName;
+            PhoneNumber = user.PhoneNumber;
             EmergencyContact = user.EmergencyContact;
             EmergencyContactPhone = user.EmergencyContactPhone;
             Country = user.Country;
@@ -21,11 +22,14 @@ namespace MKTFY.Models.Entities
             Address = user.Address;
         }
 
+        
         [Required]
         public string FirstName { get; set; }
 
         [Required]
         public string LastName { get; set; }
+
+        public string PhoneNumber { get; set; }
 
         public string EmergencyContact { get; set; }
 

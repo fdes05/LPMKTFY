@@ -43,7 +43,7 @@ namespace MKTFY.Services
         }
 
         public async Task<TokenResponse> GetAccessToken(LoginVM login)
-        {            
+        {
             // Get a token from the identity server
             using (var httpClient = new HttpClient())
             {
@@ -95,28 +95,45 @@ namespace MKTFY.Services
         {
             var result = await _userRepository.VerifyEmail(userEmail);
             if (result == null)
-            {                
+            {
                 return false;
             }
             else
-            {                
+            {
                 return true;
             }
         }
 
-        
+
         public async Task<User> EditUserProfile(string id, User data)
         {
-            //add id to updated user object
-            data.Id = id;
+            ////add id to updated user object
+            //data.Id = id;
+            //data.UserName = data.Email;
+
+           
+            var currentUser = await _userRepository.GetById(id);
+                        
+            currentUser.FirstName = data.FirstName;
+            currentUser.LastName = data.LastName;
+            currentUser.PhoneNumber = data.PhoneNumber;
+            currentUser.EmergencyContact = data.EmergencyContact;
+            currentUser.EmergencyContactPhone = data.EmergencyContactPhone;
+            currentUser.Country = data.Country;
+            currentUser.City = data.City;
+            currentUser.Address = data.Address;
+
+            //var updatedUser = await _userRepository.EditUser(data)
 
             //update the user profile through user manager            
-            var result = _userManager.UpdateAsync(data);  
-            
-            //get the updated user object from the UserRepo
-            var updatedUser = await _userRepository.GetById(data.Id);
+            var result = await _userRepository.EditUserProfile(currentUser);
 
-            return updatedUser;
+            //get the updated user object from the UserRepo
+            if (result != null)
+            {
+                return result;
+            }
+            throw new UserNotSavedException("Something went wrong with updating the user information. Please try again.");
         }
     }
 }
