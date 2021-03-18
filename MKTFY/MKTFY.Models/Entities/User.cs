@@ -9,8 +9,8 @@ namespace MKTFY.Models.Entities
 {
     public class User : IdentityUser
     {
-        public User() { }
-        public User(ProfileVM user)
+        public User() : base() { }
+        public User(ProfileVM user) : base()
         {            
             FirstName = user.FirstName;
             LastName = user.LastName;
@@ -28,9 +28,7 @@ namespace MKTFY.Models.Entities
 
         [Required]
         public string LastName { get; set; }
-
-        public string PhoneNumber { get; set; }
-
+                
         public string EmergencyContact { get; set; }
 
         public string EmergencyContactPhone { get; set; }

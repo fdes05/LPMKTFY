@@ -8,13 +8,16 @@ namespace MKTFY.Models.ViewModels
     public class ListingAddVM
     {
         [Required]
+        public string UserId { get; set; }
+
+        [Required]
         public string ProductName { get; set; }
 
         [Required]
         public string Description { get; set; }
 
         [Required]
-        public string Category { get; set; }
+        public Guid CategoryId { get; set; }
 
         [Required]
         public string Condition { get; set; }

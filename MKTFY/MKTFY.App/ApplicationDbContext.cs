@@ -15,5 +15,11 @@ namespace MKTFY.App
         }
 
         public DbSet<Listing> Listings { get; set; }
+
+        public DbSet<Category> Categories { get; set; }
+
+        public DbSet<Faq> Faqs { get; set; }
+
+        public DbSet<Search> Searches { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace MKTFY.Models.ViewModels
             Id = src.Id;
             ProductName = src.ProductName;
             Description = src.Description;
-            Category = src.Category;
+            CategoryId = src.CategoryId;
             Condition = src.Condition;
             Price = src.Price;
             Location = src.Location;            
@@ -29,7 +29,7 @@ namespace MKTFY.Models.ViewModels
         public string Description { get; set; }
 
         [Required]
-        public string Category { get; set; }
+        public Guid CategoryId { get; set; }
 
         [Required]
         public string Condition { get; set; }

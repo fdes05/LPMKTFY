@@ -71,6 +71,7 @@ namespace MKTFY.App.Repositories
             if (result == null)
                 throw new NotFoundException("item with id: " + id + " not found");
 
+            // Renive the entity
             _entityDbSet.Remove(result);
             await _context.SaveChangesAsync();
         }

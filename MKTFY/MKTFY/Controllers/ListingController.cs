@@ -71,10 +71,30 @@ namespace MKTFY.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([FromRoute]Guid  id)
+        public async Task<ActionResult> Delete([FromRoute] Guid id)
         {
             await _listingRepository.Delete(id);
             return Ok();
+        }
+
+
+        [HttpGet("category/{id}")]
+        public async Task<ActionResult<ListingVM>> GetListingsByCategory([FromRoute] Guid id, [FromHeader] string userId, [FromQuery] string searchTerm)
+        {
+            var results = await _listingService.GetListingsByCategory(id, userId, searchTerm);
+
+            var models = results.Select(item => new ListingVM(item));
+            return Ok(models);
+        }
+
+
+        [HttpGet("deals")]
+        public async Task<ActionResult<ListingVM>> GetDealsWithLastThreeSearches([FromQuery] string searchTerm, [FromHeader] string userId)
+        {
+            var results = await _listingService.GetDealsWithLastThreeSearches(searchTerm, userId);
+
+            var models = results.Select(item => new ListingVM(item));
+            return Ok(models);
         }
     }
 }

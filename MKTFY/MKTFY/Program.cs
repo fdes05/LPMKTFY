@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MKTFY.App;
+using MKTFY.App.Repositories;
+using MKTFY.App.Repositories.Interfaces;
 using MKTFY.App.Seeds;
 using MKTFY.Models.Entities;
 using System;
@@ -35,9 +37,17 @@ namespace MKTFY
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     var context = services.GetRequiredService<ApplicationDbContext>();
 
+                    // This is to add the CategoryRepo to this variable so it can be passed in to the CategorySeeder below.
+                    var categoryRepository = services.GetRequiredService<ICategoryRepository>();
+
+                    // This is to run the DB migration at program start to update the DB with the latest migration files
                     context.Database.Migrate();
+
                     // This async function is required to add the seeder users and roles at the program start
                     Task.Run(async () => await UserAndRoleSeeder.SeedUsersAndRoles(roleManager, userManager)).Wait();
+
+                    // This async function is required to add the seeder the Categories at the program start
+                    Task.Run(async () => await CategorySeeder.AddDefaultCategories(categoryRepository)).Wait();
                 }
                 catch (Exception ex)
                 {

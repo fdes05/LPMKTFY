@@ -71,14 +71,23 @@ namespace MKTFY
 
             // This is to add Dependency Injection for the ListingRepository. This is why we need the Interface IListingRepository
             services.AddScoped<IListingRepository, ListingRepository>();
+
             // This will add the Dependency Injection for the UserRepository.
             services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+            services.AddScoped<IFaqRepository, FaqRepository>();
+
             // This will add DI for MailService
             services.AddScoped<IMailService, MailService>();
 
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IListingService, ListingService>();
+
+            services.AddScoped<IFaqService, FaqService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

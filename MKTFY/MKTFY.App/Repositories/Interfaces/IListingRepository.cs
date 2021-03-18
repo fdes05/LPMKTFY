@@ -13,5 +13,9 @@ namespace MKTFY.App.Repositories.Interfaces
         // and 'services.AddScoped<Interface, Repository>()'
 
         // All the methods that need to be implemented are inherited from the IBaseRepository interface
+        
+        Task<List<Listing>> GetListingsbyCategory(Guid id);
+        Task<Search> saveSearchTerm(Guid id, string userId, string searchTerm);
+        Task<List<Search>> GetUserSearches(string userId);        
     }
 }
