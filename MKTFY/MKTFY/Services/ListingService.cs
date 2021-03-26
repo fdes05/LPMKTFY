@@ -8,13 +8,26 @@ using System.Threading.Tasks;
 
 namespace MKTFY.Services
 {
+    /// <summary>
+    /// Listing Service
+    /// </summary>
     public class ListingService : IListingService
     {
         private readonly IListingRepository _listingRepository;
+        /// <summary>
+        /// Listing Service Constructor
+        /// </summary>
+        /// <param name="listingRepository"></param>
         public ListingService(IListingRepository listingRepository)
         {
             _listingRepository = listingRepository;
         }
+        /// <summary>
+        /// Edit Listing (requires ListingId and Listing Entity with new info)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public async Task<Listing> EditListing(Guid id, Listing data)
         {
             var currentListing = await _listingRepository.Get(id);
@@ -35,7 +48,13 @@ namespace MKTFY.Services
             return savedListing;
         }
 
-      
+        /// <summary>
+        /// Get Listings by Category (requires CategoryId, UserId and optional search term)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="userId"></param>
+        /// <param name="searchTerm"></param>
+        /// <returns></returns>
         public async Task<List<Listing>> GetListingsByCategory(Guid id, string userId, string searchTerm)
         {           
             // getting a list of Listings from the repo based on the CategoryId (as a Guid)
@@ -59,7 +78,12 @@ namespace MKTFY.Services
                 return listingsList;
             }            
         }
-
+        /// <summary>
+        /// Get Deals with last three Searches from specific user (requires UserId and optional search term)
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<List<Listing>> GetDealsWithLastThreeSearches(string searchTerm, string userId)
         {
             // get all Search objects from the DB

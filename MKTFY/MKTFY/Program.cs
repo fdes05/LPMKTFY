@@ -17,8 +17,15 @@ using System.Threading.Tasks;
 
 namespace MKTFY
 {
+    /// <summary>
+    /// Program Object
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Main Method
+        /// </summary>
+        /// <param name="args"></param>
         public static void Main(string[] args)
         {
             // This is to separate the 'CreateHostBuilder(args).Build().Run()' into two separate steps in 
@@ -58,7 +65,11 @@ namespace MKTFY
             // This is the second and last step to get the app started.
             host.Run();
         }
-
+        /// <summary>
+        /// Create Host Builder
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>

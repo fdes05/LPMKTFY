@@ -15,6 +15,7 @@ namespace MKTFY.App.Repositories.Interfaces
         Task<User> GetById(string id);
         Task<User> GetByUserName(string userName);
         Task<User> VerifyEmail(string userEmail);
-        Task<User> EditUserProfile(User data);        
+        Task<User> EditUserProfile(User data);
+        Task<List<Listing>> GetUserListings(string userId);
     }
 }

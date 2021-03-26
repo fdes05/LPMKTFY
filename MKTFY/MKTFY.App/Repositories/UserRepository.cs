@@ -5,6 +5,7 @@ using MKTFY.Models.Entities;
 using MKTFY.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -59,6 +60,14 @@ namespace MKTFY.App.Repositories
             var updatedUser = await _context.Users.FindAsync(data.Id);
 
             return updatedUser;
+        }
+
+        public async Task<List<Listing>> GetUserListings(string userId)
+        {
+            var user = await _context.Users.Include(i => i.Listing).FirstOrDefaultAsync(u => u.Id == userId);
+            var userListings = user.Listing.ToList();           
+            
+            return userListings;
         }
     }
 }

@@ -1,0 +1,647 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MKTFY</name>
+    </assembly>
+    <members>
+        <member name="T:MKTFY.Controllers.AccountController">
+            <summary>
+            This is the Account controller
+            </summary>
+        </member>
+        <member name="M:MKTFY.Controllers.AccountController.#ctor(Microsoft.AspNetCore.Identity.SignInManager{MKTFY.Models.Entities.User},Microsoft.AspNetCore.Identity.UserManager{MKTFY.Models.Entities.User},MKTFY.Services.Interfaces.IMailService,MKTFY.Services.Interfaces.IUserService)">
+            <summary>
+            This is the AccountController Constructor which takes in the SignInManager, UserManager (both from Identity Framework), mailService and userService
+            </summary>
+            <param name="signinManager"></param>
+            <param name="userManager"></param>
+            <param name="mailService"></param>
+            <param name="userService"></param>
+        </member>
+        <member name="M:MKTFY.Controllers.AccountController.Login(MKTFY.Models.ViewModels.LoginVM)">
+            <summary>
+            Login endpoint
+            </summary>
+            <param name="login">Needs a LoginVM with JSON data (userName, </param>
+            <returns>Returns LoginResponseVM with the AccessToken, User data and expire info</returns>       
+            <response code="200">User Login successful</response>        
+            <response code="500">Server failure, unknown reason</response>
+        </member>
+        <member name="M:MKTFY.Controllers.AccountController.RegisterEmailVerification(MKTFY.Models.ViewModels.EmailVerificationVM)">
+            <summary>
+            Email verification endpoint
+            </summary>
+            <param name="email">Needs the email address provided as JSON data</param>
+            <returns>Returns a EmailVerificationResponseVM and sends an email to user with SendGrid</returns>
+            <response code="200">Verification email sent to user email</response>        
+            <response code="500">Server failure, unknown reason</response>        
+        </member>
+        <member name="M:MKTFY.Controllers.AccountController.Register(MKTFY.Models.ViewModels.RegisterVM)">
+            <summary>
+            Register Endpoint
+            </summary>
+            <param name="data">Requires a RegisterVM with email, firstName, lastName, phoneNumber, country, city, address, password, confirmPassword, clientId</param>
+            <returns>Returns a LoginResponseVM with AccessToke, User data and expire info</returns>
+            <response code="200">Register successful and user saved</response>        
+            <response code="500">Server failure, unknown reason</response> 
+        </member>
+        <member name="M:MKTFY.Controllers.AccountController.ForgetPassword(MKTFY.Models.ViewModels.ForgetPwVM)">
+            <summary>
+            Forget Password Endpoint
+            </summary>
+            <param name="forgetInfo">Requires a ForgetPwVM with just the email as JSON data </param>
+            <returns>Returns a ForgetPwResponseVM with a response object, reset token and user data </returns>
+            <response code="200">Email to reset password sent to user email with ResetToken</response>        
+            <response code="500">Server failure, unknown reason</response> 
+        </member>
+        <member name="M:MKTFY.Controllers.AccountController.ResetPassword(MKTFY.Models.ViewModels.ResetPwVM)">
+            <summary>
+            Reset Password Endpoint
+            </summary>
+            <param name="resetInfo">Requires a ResetPwVM as JSON data with the ResetToken, new Password and user email</param>
+            <returns>Returns a ResetPwResponseVM with the user email and a message as JSON data</returns>
+            <response code="200">Password updated for user with the one provided</response>        
+            <response code="500">Server failure, unknown reason</response> 
+        </member>
+        <member name="M:MKTFY.Controllers.AccountController.ViewProfile(System.String)">
+            <summary>
+            ViewProfile Endpoint
+            </summary>
+            <param name="id">Requires the userId in the URL</param>
+            <returns>Returns a ProfileVM as JSON data with firstName, lastName, phoneNumber, emergencyContact, emergencyContactPhone, country, city, address</returns>
+            <response code="200">Provides profile info</response> 
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response> 
+        </member>
+        <member name="M:MKTFY.Controllers.AccountController.EditProfile(System.String,MKTFY.Models.ViewModels.ProfileVM)">
+            <summary>
+            Edit Profile
+            </summary>
+            <param name="id">Requires userId in the URL</param>
+            <param name="data">Requires ProfileVM as JSON data with updated firstName, lastName, phoneNumber, emergencyContact, emergencyContactPhone, country, city, address</param>
+            <returns>Returns a ProfileVM as JSON data with  with updated firstName, lastName, phoneNumber, emergencyContact, emergencyContactPhone, country, city, address</returns>
+            <response code="200">Provides updated profile info</response> 
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response> 
+        </member>
+        <member name="M:MKTFY.Controllers.AccountController.MyListings(System.String)">
+            <summary>
+            MyListings Endpoint
+            </summary>
+            <param name="id">Requires userId in URL</param>
+            <returns>Returns a list of ListingVM based on the listings created by this user </returns>
+            <response code="200">Provides a list of listings from this user</response> 
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response> 
+        </member>
+        <member name="T:MKTFY.Controllers.FaqController">
+            <summary>
+            FAQ Controller
+            </summary>
+        </member>
+        <member name="M:MKTFY.Controllers.FaqController.#ctor(MKTFY.Services.Interfaces.IFaqService)">
+            <summary>
+            FAQ Controller Constructor which takes in a IFaqService for DI
+            </summary>
+            <param name="faqService"></param>
+        </member>
+        <member name="M:MKTFY.Controllers.FaqController.GetFaq(System.Guid)">
+            <summary>
+            Get all FAQs
+            </summary>  
+            <param name="id">Requires the FAQ Id in URL</param>
+            <returns>Returns a FaqVM as JSON data with a FaqId, title and a description</returns>
+            <response code="200">Specific FaqVM is returned</response>
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response>
+        </member>
+        <member name="M:MKTFY.Controllers.FaqController.GetAllFaq">
+            <summary>
+            Get all FAQs
+            </summary>         
+            <returns>Returns aall FaqVMs as JSON data with a FaqId, title and a description</returns>
+            <response code="200">All FaqVMs are returned</response>
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response>
+        </member>
+        <member name="M:MKTFY.Controllers.FaqController.AddFaq(MKTFY.Models.ViewModels.FaqAddVM)">
+            <summary>
+            Get all FAQs
+            </summary>  
+            <param name="data">Requires a FaqAddVM as JSON data with a title and description </param>
+            <returns>Returns a FaqVM as JSON data with a FaqId, title and a description</returns>
+            <response code="200">Added FaqVM is returned</response>
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response>
+        </member>
+        <member name="M:MKTFY.Controllers.FaqController.EditFaq(System.Guid,MKTFY.Models.ViewModels.FaqAddVM)">
+            <summary>
+            Edit FAQ
+            </summary>
+            <param name="id">Requires FaqId in URL</param>
+            <param name="data">Requires FaqAddVM as JSON data with updated title and description</param>        
+            <returns>Returns a FaqVM as JSON data with a FaqId, title and a description</returns>
+            <response code="200">Specific FaqVM is returned</response>
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response>
+        </member>
+        <member name="M:MKTFY.Controllers.FaqController.DeleteFaq(System.Guid)">
+            <summary>
+            Delete a specific FAQ
+            </summary>  
+            <param name="id">Requires the FAQ Id in URL</param>
+            <returns>Returns an ActionResult</returns>
+            <response code="200">FAQ has been successfully deleted</response>
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response>
+        </member>
+        <member name="T:MKTFY.Controllers.ListingController">
+            <summary>
+            Listing Controller
+            </summary>
+        </member>
+        <member name="M:MKTFY.Controllers.ListingController.#ctor(MKTFY.App.Repositories.Interfaces.IListingRepository,MKTFY.Services.Interfaces.IListingService)">
+            <summary>
+            Listing Controler Costructor which takes in an IListingRepository and IListingService
+            </summary>
+            <param name="listingRepository"></param>
+            <param name="listingService"></param>
+        </member>
+        <member name="M:MKTFY.Controllers.ListingController.Create(MKTFY.Models.ViewModels.ListingAddVM)">
+            <summary>
+            Create a new listing from user
+            </summary>
+            <param name="data">Needs a ListingAddVM</param>
+            <returns>Returns a ListingVM with the listing that was created</returns>
+            <response code="200">Listing that was created</response>
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response>
+        </member>
+        <member name="M:MKTFY.Controllers.ListingController.GetAll">
+            <summary>
+            Get all listings
+            </summary>
+            <returns>
+            Array of listings, not including deleted listings
+            </returns>
+            <response code="200">Listing found</response>
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response>
+        </member>
+        <member name="M:MKTFY.Controllers.ListingController.Get(System.Guid)">
+            <summary>
+            Get specific listing by listingId
+            </summary>
+            <param name="id">needs the listingId in the URL</param>
+            <returns>Returns a ListingVM with the specific listing</returns>
+            <response code="200">Listing found</response>
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response>
+        </member>
+        <member name="M:MKTFY.Controllers.ListingController.Edit(System.Guid,MKTFY.Models.ViewModels.ListingEditVM)">
+            <summary>
+            Edit specific listing by listingId
+            </summary>
+            <param name="id">needs the listingId in the URL</param>
+            <param name="listingEdit"></param>
+            <remarks>Needs a ListingEditVM in the body of the HTTP request with json data</remarks>
+            <returns>Returns a ListingVM with the updated listing</returns>
+            <response code="200">Listing found</response>
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response>
+        </member>
+        <member name="M:MKTFY.Controllers.ListingController.Delete(System.Guid)">
+            <summary>
+            Delete a specific listing
+            </summary>
+            <param name="id">needs the listingId in the URL</param>
+            <returns>returns a 200 code if listing was deleted successfully on the server</returns>
+            <response code="200">Listing found</response>
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response>
+        </member>
+        <member name="M:MKTFY.Controllers.ListingController.GetListingsByCategory(System.Guid,System.String,System.String)">
+            <summary>
+            Get all Listings by CategoryId. Optional: add a search term to search for specific keywords in that category
+            </summary>
+            <param name="id">needs the categoryId in the URL</param>
+            <param name="userId"></param>
+            <param name="searchTerm"></param>
+            <remarks>Needs the userId in the HTTP Header as well as the optional searchTerm as a Querry in the URL</remarks>
+            <returns>returns a list of listings based on the categoryId and an optional searchTerm</returns>
+            <response code="200">Listings found</response>
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response>
+        </member>
+        <member name="M:MKTFY.Controllers.ListingController.GetDealsWithLastThreeSearches(System.String,System.String)">
+            <summary>
+            Get all Listings from the past three searchTerms (can be from different categories) this user has used. Will return nothing if user hasen't used a search before
+            </summary>       
+            <remarks>Needs the userId in the HTTP Header as well as the optional searchTerm as a Querry in the URL</remarks>
+            <returns>returns a list of listings based on the last three searches the user has done limited to the listings if an optional searchTerm has been provided</returns>
+            <response code="200">Listings found</response>
+            <response code="401">Not currently logged in</response>
+            <response code="403">User does not have access to resource</response>
+            <response code="500">Server failure, unknown reason</response>
+        </member>
+        <member name="T:MKTFY.Middleware.GlobalExceptionHandler">
+            <summary>
+            Global Exception Handler
+            </summary>
+        </member>
+        <member name="M:MKTFY.Middleware.GlobalExceptionHandler.#ctor(Microsoft.AspNetCore.Http.RequestDelegate)">
+            <summary>
+            GlobalExceptionHandler Constructor
+            </summary>
+            <param name="next">Takes in a RequestDelegate parameter</param>
+        </member>
+        <member name="M:MKTFY.Middleware.GlobalExceptionHandler.Invoke(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Invoke for GlobalExeptionHandler
+            </summary>
+            <param name="context">Takes in HttpContext</param>
+            <returns></returns>
+        </member>
+        <member name="T:MKTFY.Program">
+            <summary>
+            Program Object
+            </summary>
+        </member>
+        <member name="M:MKTFY.Program.Main(System.String[])">
+            <summary>
+            Main Method
+            </summary>
+            <param name="args"></param>
+        </member>
+        <member name="M:MKTFY.Program.CreateHostBuilder(System.String[])">
+            <summary>
+            Create Host Builder
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MKTFY.Services.FaqService">
+            <summary>
+            FAQ Service
+            </summary>
+        </member>
+        <member name="M:MKTFY.Services.FaqService.#ctor(MKTFY.App.Repositories.Interfaces.IFaqRepository)">
+            <summary>
+            FAQ Service Constructor takes in a IFaqRepository
+            </summary>
+            <param name="faqRepo"></param>
+        </member>
+        <member name="M:MKTFY.Services.FaqService.GetAllFaq">
+            <summary>
+            Get All FAQs
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.FaqService.GetFaq(System.Guid)">
+            <summary>
+            Get FAQ
+            </summary>
+            <param name="id">Provide FaqId</param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.FaqService.AddFaq(MKTFY.Models.Entities.Faq)">
+            <summary>
+            Add FAQ
+            </summary>
+            <param name="faq">Requires a FAQ Entity</param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.FaqService.EditFaq(System.Guid,MKTFY.Models.Entities.Faq)">
+            <summary>
+            Edit FAQ
+            </summary>
+            <param name="id">Requires FaqId</param>
+            <param name="data">Requires FAQ entity with updated info</param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.FaqService.DeleteFaq(System.Guid)">
+            <summary>
+            Delete FAQ
+            </summary>
+            <param name="id">Requires FaqId to be deleted</param>
+            <returns></returns>
+        </member>
+        <member name="T:MKTFY.Services.Interfaces.IFaqService">
+            <summary>
+            Interface FAQ Service
+            </summary>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IFaqService.GetAllFaq">
+            <summary>
+            Get All FAQ
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IFaqService.GetFaq(System.Guid)">
+            <summary>
+            Get FAQ by Id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IFaqService.AddFaq(MKTFY.Models.Entities.Faq)">
+            <summary>
+            Add FAQ
+            </summary>
+            <param name="faq"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IFaqService.EditFaq(System.Guid,MKTFY.Models.Entities.Faq)">
+            <summary>
+            Edit FAQ
+            </summary>
+            <param name="id"></param>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IFaqService.DeleteFaq(System.Guid)">
+            <summary>
+            Delete FAQ
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MKTFY.Services.Interfaces.IListingService">
+            <summary>
+            Interface Listing Service
+            </summary>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IListingService.EditListing(System.Guid,MKTFY.Models.Entities.Listing)">
+            <summary>
+            Edit Listing Service
+            </summary>
+            <param name="id"></param>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IListingService.GetListingsByCategory(System.Guid,System.String,System.String)">
+            <summary>
+            Get Listings by Category (requires CategoryId)
+            </summary>
+            <param name="id"></param>
+            <param name="userId"></param>
+            <param name="searchTerm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IListingService.GetDealsWithLastThreeSearches(System.String,System.String)">
+            <summary>
+            Get Deals with last three searches by this user (requires UserId)
+            </summary>
+            <param name="searchTerm"></param>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MKTFY.Services.Interfaces.IMailService">
+            <summary>
+            Interface Mail Service
+            </summary>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IMailService.SendEmail(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Send email via SendGrid
+            </summary>
+            <param name="To"></param>
+            <param name="From"></param>
+            <param name="Subject"></param>
+            <param name="PlainTextContent"></param>
+            <param name="HtmlContent"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MKTFY.Services.Interfaces.IUserService">
+            <summary>
+            Interface User Service
+            </summary>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IUserService.GetUserByEmail(System.String)">
+            <summary>
+            Get User by Email (requires email address)
+            </summary>
+            <param name="email"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IUserService.GetUserById(System.String)">
+            <summary>
+            Get User by UserId (requires UserId)
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IUserService.RegisterUser(MKTFY.Models.ViewModels.RegisterVM)">
+            <summary>
+            Register User (requires RegisterVM with info)
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IUserService.GetAccessToken(MKTFY.Models.ViewModels.LoginVM)">
+            <summary>
+            Get Access Token (requires LoginVM info)
+            </summary>
+            <param name="login"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IUserService.VerifyEmail(System.String)">
+            <summary>
+            Verify Email (requires User email to verify email doesn't exist in DB already)
+            </summary>
+            <param name="userEmail"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IUserService.EditUserProfile(System.String,MKTFY.Models.Entities.User)">
+            <summary>
+            Edit User Profile (requires UserId and an User Entity with updated info)
+            </summary>
+            <param name="id"></param>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.Interfaces.IUserService.GetUserListings(System.String)">
+            <summary>
+            Get User Listings (requires UserId and will return all Listings from this user)
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MKTFY.Services.ListingService">
+            <summary>
+            Listing Service
+            </summary>
+        </member>
+        <member name="M:MKTFY.Services.ListingService.#ctor(MKTFY.App.Repositories.Interfaces.IListingRepository)">
+            <summary>
+            Listing Service Constructor
+            </summary>
+            <param name="listingRepository"></param>
+        </member>
+        <member name="M:MKTFY.Services.ListingService.EditListing(System.Guid,MKTFY.Models.Entities.Listing)">
+            <summary>
+            Edit Listing (requires ListingId and Listing Entity with new info)
+            </summary>
+            <param name="id"></param>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.ListingService.GetListingsByCategory(System.Guid,System.String,System.String)">
+            <summary>
+            Get Listings by Category (requires CategoryId, UserId and optional search term)
+            </summary>
+            <param name="id"></param>
+            <param name="userId"></param>
+            <param name="searchTerm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.ListingService.GetDealsWithLastThreeSearches(System.String,System.String)">
+            <summary>
+            Get Deals with last three Searches from specific user (requires UserId and optional search term)
+            </summary>
+            <param name="searchTerm"></param>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MKTFY.Services.MailService">
+            <summary>
+            Mail Service
+            </summary>
+        </member>
+        <member name="M:MKTFY.Services.MailService.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Mail Service Constructor which takes in an IConfiguration)
+            </summary>
+            <param name="config"></param>
+        </member>
+        <member name="M:MKTFY.Services.MailService.SendEmail(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Send Email Method
+            </summary>
+            <param name="toEmail">Requires 'To email' address</param>
+            <param name="fromEmail">Requires 'From email' address</param>
+            <param name="subject">Requires a subject line</param>
+            <param name="plainTextContent">Requires plain text that email needs to contain</param>
+            <param name="htmlContent">Requires HTML content that email needs to contain</param>
+            <returns></returns>
+        </member>
+        <member name="T:MKTFY.Services.UserService">
+            <summary>
+            User Service
+            </summary>
+        </member>
+        <member name="M:MKTFY.Services.UserService.#ctor(MKTFY.App.Repositories.Interfaces.IUserRepository,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Identity.UserManager{MKTFY.Models.Entities.User})">
+            <summary>
+            User Service Constructor which takes in an IUserRepository, IConfiguration and UserManager)
+            </summary>
+            <param name="userRepository"></param>
+            <param name="config"></param>
+            <param name="userManager"></param>
+        </member>
+        <member name="M:MKTFY.Services.UserService.GetUserByEmail(System.String)">
+            <summary>
+            Get User by Email which takes in User Email address
+            </summary>
+            <param name="email"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.UserService.GetUserById(System.String)">
+            <summary>
+            Get User by UserId which takes in UserId
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.UserService.GetAccessToken(MKTFY.Models.ViewModels.LoginVM)">
+            <summary>
+            Get Access Token which takes in a LoginVM with email, password and clientId
+            </summary>
+            <param name="login"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.UserService.RegisterUser(MKTFY.Models.ViewModels.RegisterVM)">
+            <summary>
+            Register User which takes in a RegisterVM with user info
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.UserService.VerifyEmail(System.String)">
+            <summary>
+            Verify Email which takes in User Email and verifies it does not already exist in DB
+            </summary>
+            <param name="userEmail"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.UserService.EditUserProfile(System.String,MKTFY.Models.Entities.User)">
+            <summary>
+            Edit User Profile which takes is UserId and updated User data
+            </summary>
+            <param name="id"></param>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MKTFY.Services.UserService.GetUserListings(System.String)">
+            <summary>
+            Get User Listings which takes in UserId and returns all Listings from this User
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MKTFY.Startup">
+            <summary>
+            Startup
+            </summary>
+        </member>
+        <member name="P:MKTFY.Startup.Configuration">
+            <summary>
+            Configuration Field
+            </summary>
+        </member>
+        <member name="M:MKTFY.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Startup Constructor
+            </summary>
+            <param name="configuration"></param>
+        </member>
+        <member name="M:MKTFY.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configure Services
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:MKTFY.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            Configure Method
+            </summary>
+            <param name="app"></param>
+            <param name="env"></param>
+        </member>
+        <member name="T:MKTFY.SwashBuckle.AuthHeaderOperationFilter">
+            <summary>
+            This class is to add the SwashBuckle capability to add authorization to the endpoints so endpoints can be tested
+            </summary>
+        </member>
+        <member name="M:MKTFY.SwashBuckle.AuthHeaderOperationFilter.Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
+            <summary>
+            AuthHeaderOperationFilter Constructor
+            </summary>
+            <param name="operation"></param>
+            <param name="context"></param>
+        </member>
+    </members>
+</doc>

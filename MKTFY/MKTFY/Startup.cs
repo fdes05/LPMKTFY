@@ -20,18 +20,35 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MKTFY.Middleware;
 using MKTFY.Services.Interfaces;
 using MKTFY.Services;
+using Microsoft.OpenApi.Models;
+using System.IO;
+using MKTFY.SwashBuckle;
 
 namespace MKTFY
 {
+    /// <summary>
+    /// Startup
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Configuration Field
+        /// </summary>
         public IConfiguration Configuration { get; }
+        /// <summary>
+        /// Startup Constructor
+        /// </summary>
+        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }               
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// Configure Services
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             // This is to add the DbContext service that uses the 'DefaultConnection' string for the database
@@ -69,6 +86,28 @@ namespace MKTFY
 
             services.AddControllers();
 
+            // This is to add OpenAPI (Swagger) to your projects. 'Swashbuckle.AspNetCore' NuGet Package needs to be
+            // added to the main MKTFY api project and the MKTFY.Models project. Also, need to go to project settings and
+            // add under 'build' the 'Output' section with 'XML Documentation File' (default file loc is okay)
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MKTFY API", Version = "v1" });
+
+                c.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Scheme = "bearer"
+                });
+                c.OperationFilter<AuthHeaderOperationFilter>();
+
+                var apiPath = Path.Combine(System.AppContext.BaseDirectory, "MKTFY.xml");
+                var modelsPath = Path.Combine(System.AppContext.BaseDirectory, "MKTFY.Models.xml");
+                c.IncludeXmlComments(apiPath);
+                c.IncludeXmlComments(modelsPath);
+            });
+
             // This is to add Dependency Injection for the ListingRepository. This is why we need the Interface IListingRepository
             services.AddScoped<IListingRepository, ListingRepository>();
 
@@ -91,6 +130,11 @@ namespace MKTFY
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// Configure Method
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -101,6 +145,16 @@ namespace MKTFY
            // app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // this is to add swagger to our app (localhost:33000/swagger/v1/swagger.json)
+            app.UseSwagger();
+
+            // this is to add the swagger UI so it looks nicer and we can add swagger comments to our endpoints
+            // UI can be found at 'localhost:33000/swagger/index.html'
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MKTFY API V1");
+            });
 
             // Global error handler
             app.UseMiddleware<GlobalExceptionHandler>();

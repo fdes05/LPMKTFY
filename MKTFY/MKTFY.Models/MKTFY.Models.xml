@@ -1,0 +1,680 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MKTFY.Models</name>
+    </assembly>
+    <members>
+        <member name="T:MKTFY.Models.Entities.BaseEntity`1">
+            <summary>
+            Base Entity
+            </summary>
+            <typeparam name="TId"></typeparam>
+        </member>
+        <member name="M:MKTFY.Models.Entities.BaseEntity`1.#ctor">
+            <summary>
+            Base Entity constructor
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.BaseEntity`1.Id">
+            <summary>
+            Base entity Id field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.BaseEntity`1.Created">
+            <summary>
+            Base Entity DateTime field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.Entities.Category">
+            <summary>
+            Category Entity
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.Entities.Category.#ctor">
+            <summary>
+            Category constructor
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.Entities.Category.#ctor(System.String)">
+            <summary>
+            Additonal Category constructor which takes in a CategoryName(string)
+            </summary>
+            <param name="category"></param>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Category.CategoryName">
+            <summary>
+            CategoryName field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Category.Listing">
+            <summary>
+            Listing field with a list of listings specific to this Category
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.Entities.Faq">
+            <summary>
+            FAQ Entity
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.Entities.Faq.#ctor">
+            <summary>
+            FAQ Constructor
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.Entities.Faq.#ctor(MKTFY.Models.ViewModels.FaqAddVM)">
+            <summary>
+            Additional FAQ Constructor which takes in a FaqAddVM object (title and description)
+            </summary>
+            <param name="faq"></param>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Faq.Title">
+            <summary>
+            Title Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Faq.Description">
+            <summary>
+            Description Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.Entities.Listing">
+            <summary>
+            Listing Entity
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.Entities.Listing.#ctor">
+            <summary>
+            Listing constructor
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.Entities.Listing.#ctor(MKTFY.Models.ViewModels.ListingAddVM)">
+            <summary>
+            Aditional Listing constructor which takes in a ListingAddVM (userId, ProductName, Description, CategoryId, Condition, Price, Location)
+            </summary>
+            <param name="src"></param>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Listing.ProductName">
+            <summary>
+            ProductName Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Listing.Description">
+            <summary>
+            Description Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Listing.Condition">
+            <summary>
+            Condition Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Listing.Price">
+            <summary>
+            Price Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Listing.Location">
+            <summary>
+            Location Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Listing.CategoryId">
+            <summary>
+            CategoryId Field to define the Many-To-One relationshipt with Category
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Listing.Category">
+            <summary>
+            Category Field to define the Many-To-One relationshipt with Category
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Listing.UserId">
+            <summary>
+            UserId Field to define the Many-To-One relationshipt with User
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Listing.User">
+            <summary>
+            User Field to define the Many-To-One relationshipt with User
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.Entities.Search">
+            <summary>
+            Search Entity
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.Entities.Search.#ctor">
+            <summary>
+            Search Constructor
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.Entities.Search.#ctor(System.String,System.Guid,System.String)">
+            <summary>
+            Search Constructor which takes in parameters
+            </summary>
+            <param name="userId">(string)userId</param>
+            <param name="categoryId">(Guid)categoryId</param>
+            <param name="searchTerm">(string)searchTerm</param>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Search.UserId">
+            <summary>
+            UserId Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Search.CategoryId">
+            <summary>
+            CategoryId Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.Search.SearchTerm">
+            <summary>
+            SearchTerm Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.Entities.User">
+            <summary>
+            User Entity
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.Entities.User.#ctor">
+            <summary>
+            User Constructor
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.Entities.User.#ctor(MKTFY.Models.ViewModels.ProfileVM)">
+            <summary>
+            Additional User Constructor which takes in a ProfileVM (firstName, lastName, phoneNumber, emergencyContact, EmergencyContactPhone, Country, City, Address)
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.User.FirstName">
+            <summary>
+            FirstName Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.User.LastName">
+            <summary>
+            LastName Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.User.EmergencyContact">
+            <summary>
+            EmergencyContact Field
+            </summary>   
+        </member>
+        <member name="P:MKTFY.Models.Entities.User.EmergencyContactPhone">
+            <summary>
+            EmergencyContactPhone Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.User.Country">
+            <summary>
+            Country Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.User.City">
+            <summary>
+            City Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.User.Address">
+            <summary>
+            Address Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.Entities.User.Listing">
+            <summary>
+            Listings Field for the Many-To-One relationship with Listings
+            </summary>       
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.EmailVerificationResponseVM">
+            <summary>
+            Email Verification Response View Model
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.ViewModels.EmailVerificationResponseVM.#ctor(SendGrid.Response)">
+            <summary>
+            EmailVerificationResponseVM Constructor which takes in a Response object)
+            </summary>
+            <param name="response"></param>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.EmailVerificationResponseVM.StatusCode">
+            <summary>
+            Status Code Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.EmailVerificationResponseVM.MessageBody">
+            <summary>
+            Message Body Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.EmailVerificationVM">
+            <summary>
+            Email Verification View Model
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.EmailVerificationVM.Email">
+            <summary>
+            Email Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.FaqAddVM">
+            <summary>
+            FAQ Add View Model
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.FaqAddVM.Title">
+            <summary>
+            Title Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.FaqAddVM.Description">
+            <summary>
+            Description Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.FaqVM">
+            <summary>
+            FAQ View Model
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.ViewModels.FaqVM.#ctor(MKTFY.Models.Entities.Faq)">
+            <summary>
+            FAQ Constructor which takes in a FAQ Entity with 
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.FaqVM.Id">
+            <summary>
+            FaqId Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.FaqVM.Title">
+            <summary>
+            Title Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.FaqVM.Description">
+            <summary>
+            Description Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.ForgetPwResponseVM">
+            <summary>
+            Forget Password Response View Model
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.ViewModels.ForgetPwResponseVM.#ctor(SendGrid.Response,System.String,MKTFY.Models.Entities.User)">
+            <summary>
+            ForgetPwResponseVM Constructor which takes in a Response object, resetToken and User data
+            </summary>
+            <param name="response"></param>
+            <param name="resetToken"></param>
+            <param name="user"></param>        
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ForgetPwResponseVM.ResetToken">
+            <summary>
+            ResetToken Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ForgetPwResponseVM.Email">
+            <summary>
+            Email Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ForgetPwResponseVM.StatusCode">
+            <summary>
+            StatusCode Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ForgetPwResponseVM.MessageBody">
+            <summary>
+            MessageBody Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.ForgetPwVM">
+            <summary>
+            Forget Password View Model
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ForgetPwVM.Email">
+            <summary>
+            Email Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.ListingAddVM">
+            <summary>
+            Listing Add View Model
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingAddVM.UserId">
+            <summary>
+            UserId Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingAddVM.ProductName">
+            <summary>
+            Product Name Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingAddVM.Description">
+            <summary>
+            Description Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingAddVM.CategoryId">
+            <summary>
+            CategoryId Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingAddVM.Condition">
+            <summary>
+            Condition Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingAddVM.Price">
+            <summary>
+            Price Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingAddVM.Location">
+            <summary>
+            Location Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.ListingEditVM">
+            <summary>
+            Listing Edit View Model which inherits from ListingAddVM
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.ListingVM">
+            <summary>
+            Listing View Model
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.ViewModels.ListingVM.#ctor(MKTFY.Models.Entities.Listing)">
+            <summary>
+            ListignVM Constructor which takes in a Listing Entity
+            </summary>
+            <param name="src"></param>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingVM.Id">
+            <summary>
+            ListingId Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingVM.ProductName">
+            <summary>
+            Product Name Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingVM.Description">
+            <summary>
+            Description Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingVM.CategoryId">
+            <summary>
+            CategoryId Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingVM.Condition">
+            <summary>
+            Condition Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingVM.Price">
+            <summary>
+            Price Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ListingVM.Location">
+            <summary>
+            Location Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.LoginResponseVM">
+            <summary>
+            Login Response View Model
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.ViewModels.LoginResponseVM.#ctor(IdentityModel.Client.TokenResponse,MKTFY.Models.ViewModels.UserVM)">
+            <summary>
+            LoginResponseVM Constructor
+            </summary>
+            <param name="tokenResponse"></param>
+            <param name="user"></param>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.LoginResponseVM.AccessToken">
+            <summary>
+            Access Token Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.LoginResponseVM.Expires">
+            <summary>
+            Expires Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.LoginResponseVM.User">
+            <summary>
+            User Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.LoginVM">
+            <summary>
+            Login View Model
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.ViewModels.LoginVM.#ctor">
+            <summary>
+            LoginVM Constructor
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.ViewModels.LoginVM.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Additional LoginVM Constructor which takes in emailAddress, password, clientId
+            </summary>
+            <param name="email"></param>
+            <param name="password"></param>
+            <param name="clientId"></param>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.LoginVM.Email">
+            <summary>
+            Email Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.LoginVM.Password">
+            <summary>
+            Password Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.LoginVM.ClientId">
+            <summary>
+            ClientId Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.ProfileVM">
+            <summary>
+            Profile View Model
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.ViewModels.ProfileVM.#ctor">
+            <summary>
+            ProfileVM Constructor
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.ViewModels.ProfileVM.#ctor(MKTFY.Models.Entities.User)">
+            <summary>
+            Additional ProfileVM Constructor which takes in a User object (firstName, lastName, phoneNumber, emergencyContact, emergencyContactPhone, country, city, address)
+            </summary>
+            <param name="user"></param>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ProfileVM.FirstName">
+            <summary>
+            FirstName Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ProfileVM.LastName">
+            <summary>
+            LastName Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ProfileVM.PhoneNumber">
+            <summary>
+            PhoneNumber Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ProfileVM.EmergencyContact">
+            <summary>
+            EmergencyContact Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ProfileVM.EmergencyContactPhone">
+            <summary>
+            EmergencyContactPhone Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ProfileVM.Country">
+            <summary>
+            Country Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ProfileVM.City">
+            <summary>
+            City Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ProfileVM.Address">
+            <summary>
+            Address Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.RegisterVM">
+            <summary>
+            Register View Model
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.RegisterVM.Email">
+            <summary>
+            Email Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.RegisterVM.FirstName">
+            <summary>
+            FirstName Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.RegisterVM.LastName">
+            <summary>
+            LastName Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.RegisterVM.PhoneNumber">
+            <summary>
+            PhoneNumber Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.RegisterVM.Country">
+            <summary>
+            Country Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.RegisterVM.City">
+            <summary>
+            City Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.RegisterVM.Address">
+            <summary>
+            Address Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.RegisterVM.Password">
+            <summary>
+            Password Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.RegisterVM.ConfirmPassword">
+            <summary>
+            ConfirmPassword Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.RegisterVM.ClientId">
+            <summary>
+            ClientId Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.ResetPwResponseVM">
+            <summary>
+            Reset Password Response View Model
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.ViewModels.ResetPwResponseVM.#ctor(System.String,System.String)">
+            <summary>
+            ResetPwResponseVM Constructor which takes in an email address and message
+            </summary>
+            <param name="email"></param>
+            <param name="message"></param>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ResetPwResponseVM.Email">
+            <summary>
+            Email Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ResetPwResponseVM.Message">
+            <summary>
+            Message Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.ResetPwVM">
+            <summary>
+            Reset Password View Model
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ResetPwVM.ResetToken">
+            <summary>
+            ResetToken Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ResetPwVM.Password">
+            <summary>
+            Password Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.ResetPwVM.Email">
+            <summary>
+            User email Field
+            </summary>
+        </member>
+        <member name="T:MKTFY.Models.ViewModels.UserVM">
+            <summary>
+            User View Model
+            </summary>
+        </member>
+        <member name="M:MKTFY.Models.ViewModels.UserVM.#ctor(MKTFY.Models.Entities.User)">
+            <summary>
+            UserVM Constructor which takes in a User Entity with user data
+            </summary>
+            <param name="src"></param>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.UserVM.Id">
+            <summary>
+            UserId Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.UserVM.Email">
+            <summary>
+            Email field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.UserVM.FirstName">
+            <summary>
+            First Name Field
+            </summary>
+        </member>
+        <member name="P:MKTFY.Models.ViewModels.UserVM.LastName">
+            <summary>
+            Last Name Field
+            </summary>
+        </member>
+    </members>
+</doc>

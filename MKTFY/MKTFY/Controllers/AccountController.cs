@@ -21,24 +21,40 @@ using System.Web;
 
 namespace MKTFY.Controllers
 {
+    /// <summary>
+    /// This is the Account controller
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly SignInManager<User> _signinManager;        
+        private readonly SignInManager<User> _signinManager;
         private readonly UserManager<User> _userManager;
         private readonly IMailService _mailService;
         private readonly IUserService _userService;
 
+        /// <summary>
+        /// This is the AccountController Constructor which takes in the SignInManager, UserManager (both from Identity Framework), mailService and userService
+        /// </summary>
+        /// <param name="signinManager"></param>
+        /// <param name="userManager"></param>
+        /// <param name="mailService"></param>
+        /// <param name="userService"></param>
         public AccountController(SignInManager<User> signinManager, UserManager<User> userManager, IMailService mailService, IUserService userService)
         {
-            _signinManager = signinManager;                      
+            _signinManager = signinManager;
             _userManager = userManager;
             _mailService = mailService;
             _userService = userService;
         }
 
-
+        /// <summary>
+        /// Login endpoint
+        /// </summary>
+        /// <param name="login">Needs a LoginVM with JSON data (userName, </param>
+        /// <returns>Returns LoginResponseVM with the AccessToken, User data and expire info</returns>       
+        /// <response code="200">User Login successful</response>        
+        /// <response code="500">Server failure, unknown reason</response>
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponseVM>> Login([FromBody] LoginVM login)
         {
@@ -49,19 +65,25 @@ namespace MKTFY.Controllers
                 return BadRequest("This user account has been locked out, please try again later");
             else if (!result.Succeeded)
                 return BadRequest("Invalid username/password");
-            
+
             // Get user and generate userVM as LoginResponseVM further down requires token plus userVM
-            var user = await _userService.GetUserByEmail(login.Email);           
+            var user = await _userService.GetUserByEmail(login.Email);
             var tokenResponse = await _userService.GetAccessToken(login);
 
             if (tokenResponse.IsError)
             {
-                return BadRequest(tokenResponse.Error);                
+                return BadRequest(tokenResponse.Error);
             }
             return Ok(new LoginResponseVM(tokenResponse, new UserVM(user)));
         }
 
-
+        /// <summary>
+        /// Email verification endpoint
+        /// </summary>
+        /// <param name="email">Needs the email address provided as JSON data</param>
+        /// <returns>Returns a EmailVerificationResponseVM and sends an email to user with SendGrid</returns>
+        /// <response code="200">Verification email sent to user email</response>        
+        /// <response code="500">Server failure, unknown reason</response>        
         [HttpPost("register/emailverification")]
         public async Task<EmailVerificationResponseVM> RegisterEmailVerification([FromBody] EmailVerificationVM email)
         {
@@ -83,17 +105,16 @@ namespace MKTFY.Controllers
             throw new EmailVerificationException("Email already exists or is not valid. Use another email address.");
         }
 
-
+        /// <summary>
+        /// Register Endpoint
+        /// </summary>
+        /// <param name="data">Requires a RegisterVM with email, firstName, lastName, phoneNumber, country, city, address, password, confirmPassword, clientId</param>
+        /// <returns>Returns a LoginResponseVM with AccessToke, User data and expire info</returns>
+        /// <response code="200">Register successful and user saved</response>        
+        /// <response code="500">Server failure, unknown reason</response> 
         [HttpPost("register")]
         public async Task<ActionResult<LoginResponseVM>> Register([FromBody] RegisterVM data)
-        {
-            // FOR TESTING TO REMOVE DUPLICATE USER! REMOVE WHEN DONE
-            var userDelete = await _userService.GetUserByEmail(data.Email);
-            if (userDelete != null)
-            {
-                await _userManager.DeleteAsync(userDelete);
-            }
-
+        {  
             //Register User
             IdentityResult result = await _userService.RegisterUser(data);
 
@@ -116,7 +137,13 @@ namespace MKTFY.Controllers
             return Ok(new LoginResponseVM(tokenResponse, userVM));
         }
 
-
+        /// <summary>
+        /// Forget Password Endpoint
+        /// </summary>
+        /// <param name="forgetInfo">Requires a ForgetPwVM with just the email as JSON data </param>
+        /// <returns>Returns a ForgetPwResponseVM with a response object, reset token and user data </returns>
+        /// <response code="200">Email to reset password sent to user email with ResetToken</response>        
+        /// <response code="500">Server failure, unknown reason</response> 
         [HttpPost("forgetPassword")]
         public async Task<ActionResult<ForgetPwResponseVM>> ForgetPassword([FromBody] ForgetPwVM forgetInfo)
         {
@@ -139,10 +166,16 @@ namespace MKTFY.Controllers
 
             var result = new ForgetPwResponseVM(response, resetToken, user);
 
-            return result;
+            return Ok(result);
         }
 
-
+        /// <summary>
+        /// Reset Password Endpoint
+        /// </summary>
+        /// <param name="resetInfo">Requires a ResetPwVM as JSON data with the ResetToken, new Password and user email</param>
+        /// <returns>Returns a ResetPwResponseVM with the user email and a message as JSON data</returns>
+        /// <response code="200">Password updated for user with the one provided</response>        
+        /// <response code="500">Server failure, unknown reason</response> 
         [HttpPost("resetPassword")]
         public async Task<ActionResult<ResetPwResponseVM>> ResetPassword([FromBody] ResetPwVM resetInfo)
         {
@@ -165,33 +198,85 @@ namespace MKTFY.Controllers
             if (resetPasswordResult.Succeeded == true)
             {
                 var result = new ResetPwResponseVM(user.Email, "Password reset was successful! Please login.");
-                return result;
+                return Ok(result);
             }
-            return new ResetPwResponseVM(user.Email, "something went wrong. Please try again");
+            return BadRequest(new ResetPwResponseVM(user.Email, "something went wrong. Please try again"));
         }
 
-        
+        /// <summary>
+        /// ViewProfile Endpoint
+        /// </summary>
+        /// <param name="id">Requires the userId in the URL</param>
+        /// <returns>Returns a ProfileVM as JSON data with firstName, lastName, phoneNumber, emergencyContact, emergencyContactPhone, country, city, address</returns>
+        /// <response code="200">Provides profile info</response> 
+        /// <response code="401">Not currently logged in</response>
+        /// <response code="403">User does not have access to resource</response>
+        /// <response code="500">Server failure, unknown reason</response> 
         [HttpGet("profile/{id}")]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "member")]
-        public async Task<ProfileVM> ViewProfile([FromRoute] string id)
+        public async Task<ActionResult<ProfileVM>> ViewProfile([FromRoute] string id)
         {
             // get the user
             var user = await _userService.GetUserById(id);
 
             // return the user object as a ProfileVM object
-            return new ProfileVM(user);
+            return Ok(new ProfileVM(user));
         }
 
-
+        /// <summary>
+        /// Edit Profile
+        /// </summary>
+        /// <param name="id">Requires userId in the URL</param>
+        /// <param name="data">Requires ProfileVM as JSON data with updated firstName, lastName, phoneNumber, emergencyContact, emergencyContactPhone, country, city, address</param>
+        /// <returns>Returns a ProfileVM as JSON data with  with updated firstName, lastName, phoneNumber, emergencyContact, emergencyContactPhone, country, city, address</returns>
+        /// <response code="200">Provides updated profile info</response> 
+        /// <response code="401">Not currently logged in</response>
+        /// <response code="403">User does not have access to resource</response>
+        /// <response code="500">Server failure, unknown reason</response> 
         [HttpPut("profile/edit/{id}")]
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "member")]
-        public async Task<ProfileVM> EditProfile([FromRoute] string id, [FromBody] ProfileVM data)
+        public async Task<ActionResult<ProfileVM>> EditProfile([FromRoute] string id, [FromBody] ProfileVM data)
         {
             // get the user
             var updatedUser = await _userService.EditUserProfile(id, new User(data));
 
             // return the user object as a ProfileVM object
-            return new ProfileVM(updatedUser);
+            return Ok(new ProfileVM(updatedUser));
         }
+
+        /// <summary>
+        /// MyListings Endpoint
+        /// </summary>
+        /// <param name="id">Requires userId in URL</param>
+        /// <returns>Returns a list of ListingVM based on the listings created by this user </returns>
+        /// <response code="200">Provides a list of listings from this user</response> 
+        /// <response code="401">Not currently logged in</response>
+        /// <response code="403">User does not have access to resource</response>
+        /// <response code="500">Server failure, unknown reason</response> 
+        [HttpGet("mylistings/{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "member")]
+        public async Task<ActionResult<ListingVM>> MyListings([FromRoute] string id )
+        {
+            // get the listings by UserId
+            var results = await _userService.GetUserListings(id);
+
+            if (results == null)            
+                throw new NotFoundException("User does not seem to have any listings yet. Please create a listing.");
+            
+            // return each listing from this user as a ListingVM
+            var models = results.Select(item => new ListingVM(item));
+            return Ok(models);
+        }
+
+        //[HttpGet("mypayments/{id}")]
+        //public async Task<ActionResult<PaymentVM>> MyPayments([FromRoute] Guid id)
+        //{
+        //    // get the listings by UserId
+        //    var results = await _userService.GetUserPayments(userId);
+
+        //    // return each listing from this user as a ListingVM
+        //    var models = results.Select(item => new PaymentVM(item));
+        //    return Ok(models);
+        //}
     }
 }

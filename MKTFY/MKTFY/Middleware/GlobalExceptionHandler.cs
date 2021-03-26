@@ -9,15 +9,25 @@ using System.Threading.Tasks;
 
 namespace MKTFY.Middleware
 {
+    /// <summary>
+    /// Global Exception Handler
+    /// </summary>
     public class GlobalExceptionHandler
     {
         private readonly RequestDelegate _next;
-
+        /// <summary>
+        /// GlobalExceptionHandler Constructor
+        /// </summary>
+        /// <param name="next">Takes in a RequestDelegate parameter</param>
         public GlobalExceptionHandler(RequestDelegate next)
         {
             _next = next;
         }
-
+        /// <summary>
+        /// Invoke for GlobalExeptionHandler
+        /// </summary>
+        /// <param name="context">Takes in HttpContext</param>
+        /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
             try

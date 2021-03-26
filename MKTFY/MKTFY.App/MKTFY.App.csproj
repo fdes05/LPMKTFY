@@ -5,6 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20210318203507_UpdatedUserEntityWithListOfListing.cs" />
+    <Compile Remove="Migrations\20210318203507_UpdatedUserEntityWithListOfListing.Designer.cs" />
+    <Compile Remove="Migrations\20210324220646_UpdatedUserEntityWithICollectionListing.cs" />
+    <Compile Remove="Migrations\20210324220646_UpdatedUserEntityWithICollectionListing.Designer.cs" />
+    <Compile Remove="Migrations\20210324222210_UpdatedUserEntityWithICollectionListing.cs" />
+    <Compile Remove="Migrations\20210324222210_UpdatedUserEntityWithICollectionListing.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="IdentityServer4.EntityFramework" Version="4.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.11">
       <PrivateAssets>all</PrivateAssets>

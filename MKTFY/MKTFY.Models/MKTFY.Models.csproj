@@ -4,10 +4,15 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\Fab\source\repos\MKTFY\LPQ121_MKTFY\MKTFY\MKTFY.Models\MKTFY.Models.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.11" />
     <PackageReference Include="SendGrid" Version="9.22.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.1" />
   </ItemGroup>
 
 </Project>

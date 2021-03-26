@@ -5,8 +5,16 @@ using System.Text;
 
 namespace MKTFY.Models.ViewModels
 {
+    /// <summary>
+    /// Login Response View Model
+    /// </summary>
     public class LoginResponseVM
     {
+        /// <summary>
+        /// LoginResponseVM Constructor
+        /// </summary>
+        /// <param name="tokenResponse"></param>
+        /// <param name="user"></param>
         public LoginResponseVM(TokenResponse tokenResponse, UserVM user)
         {
             AccessToken = tokenResponse.AccessToken;
@@ -14,19 +22,19 @@ namespace MKTFY.Models.ViewModels
             User = user;
         }
 
-        // <summary>
-        // JWT Token
-        // </summary>
+        /// <summary>
+        /// Access Token Field
+        /// </summary>
         public string AccessToken { get; set; }
 
-        // <summary>
-        // Number of seconds until the access token expires
-        // </summary>
+        /// <summary>
+        /// Expires Field
+        /// </summary>
         public long Expires { get; set; }
 
-        // <summary>
-        // Additional User data
-        // </summary>
+        /// <summary>
+        /// User Field
+        /// </summary>
         public UserVM User { get; set; }
     }
 }

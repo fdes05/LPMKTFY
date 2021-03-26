@@ -3,6 +3,7 @@ using MKTFY.App.Repositories.Interfaces;
 using MKTFY.Models.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,8 @@ namespace MKTFY.App.Repositories
 
         public async Task<Category> FindCategoryByName(string categoryName)
         {
-            var result = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryName == categoryName);
+            var result = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryName == categoryName);            
+
             return result;
         }
     }

@@ -24,6 +24,9 @@ namespace MKTFY.App.Repositories
         public async Task<List<Listing>> GetListingsbyCategory(Guid id)
         {
             var listings =  await _context.Listings.Where(l => l.CategoryId == id).ToListAsync();
+            var categories = await _context.Categories.Where(c => c.Id == id).ToListAsync();
+            var category = categories[0];
+            var listingsCat = category.Listing.ToList();
 
             return listings;
         }
@@ -39,10 +42,10 @@ namespace MKTFY.App.Repositories
             await _context.SaveChangesAsync();
                         
             // verify that there are only 3 Search entries in DB and delete oldest Search entry if more than 3
-            if(_context.Searches.Count() > 3)
+            if(_context.Searches.Where(s => s.UserId == userId).Count() > 3)
             {
-                // find the oldest time in the DB based on the 'Created' attribute
-                var oldestTime = await _context.Searches.MinAsync(s => s.Created);
+                // find the oldest time of Search items by this UserId in the DB based on the 'Created' attribute
+                var oldestTime = await _context.Searches.Where(s => s.UserId == userId).MinAsync(s => s.Created);
                 // Find the 'Search' entity with that oldestTime from the step before
                 // The return type of 'Where' is IQueryable so needs the 'ToListAsync()' to finish the connection or else the context connection is kept open and the forEach loop creates an error
                 var oldestSearch = await _context.Searches.Where(s => s.Created == oldestTime).ToListAsync();

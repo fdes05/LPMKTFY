@@ -14,12 +14,20 @@ using System.Threading.Tasks;
 
 namespace MKTFY.Services
 {
+    /// <summary>
+    /// User Service
+    /// </summary>
     public class UserService : IUserService
     {
         private readonly IConfiguration _configuration;
         private readonly IUserRepository _userRepository;
         private readonly UserManager<User> _userManager;
-
+        /// <summary>
+        /// User Service Constructor which takes in an IUserRepository, IConfiguration and UserManager)
+        /// </summary>
+        /// <param name="userRepository"></param>
+        /// <param name="config"></param>
+        /// <param name="userManager"></param>
         public UserService(IUserRepository userRepository, IConfiguration config, UserManager<User> userManager)
         {
             _userRepository = userRepository;
@@ -27,21 +35,33 @@ namespace MKTFY.Services
             _userManager = userManager;
 
         }
-
+        /// <summary>
+        /// Get User by Email which takes in User Email address
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<User> GetUserByEmail(string email)
         {
             // Get the user profile
             var user = await _userRepository.GetByEmail(email);
             return user;
         }
-
+        /// <summary>
+        /// Get User by UserId which takes in UserId
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<User> GetUserById(string id)
         {
             // Get the user profile
             var user = await _userRepository.GetById(id);
             return user;
         }
-
+        /// <summary>
+        /// Get Access Token which takes in a LoginVM with email, password and clientId
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
         public async Task<TokenResponse> GetAccessToken(LoginVM login)
         {
             // Get a token from the identity server
@@ -64,11 +84,17 @@ namespace MKTFY.Services
                 return tokenResponse;
             }
         }
-
+        /// <summary>
+        /// Register User which takes in a RegisterVM with user info
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public async Task<IdentityResult> RegisterUser(RegisterVM data)
         {
+#pragma warning disable IDE0017 // Simplify object initialization
             var user = new User();
-            // Create user and add info from user registration
+#pragma warning restore IDE0017 // Simplify object initialization
+                               // Create user and add info from user registration
             user.UserName = data.Email;
             user.Email = data.Email;
             user.FirstName = data.FirstName;
@@ -90,7 +116,11 @@ namespace MKTFY.Services
                 throw new UserNotSavedException("Something went wrong and user wasn't saved. Please try again.");
             }
         }
-
+        /// <summary>
+        /// Verify Email which takes in User Email and verifies it does not already exist in DB
+        /// </summary>
+        /// <param name="userEmail"></param>
+        /// <returns></returns>
         public async Task<bool> VerifyEmail(string userEmail)
         {
             var result = await _userRepository.VerifyEmail(userEmail);
@@ -103,8 +133,12 @@ namespace MKTFY.Services
                 return true;
             }
         }
-
-
+        /// <summary>
+        /// Edit User Profile which takes is UserId and updated User data
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public async Task<User> EditUserProfile(string id, User data)
         {
             ////add id to updated user object
@@ -134,6 +168,16 @@ namespace MKTFY.Services
                 return result;
             }
             throw new UserNotSavedException("Something went wrong with updating the user information. Please try again.");
+        }
+        /// <summary>
+        /// Get User Listings which takes in UserId and returns all Listings from this User
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<List<Listing>> GetUserListings(string userId)
+        {
+            var userListings = await _userRepository.GetUserListings(userId);
+            return userListings;
         }
     }
 }
