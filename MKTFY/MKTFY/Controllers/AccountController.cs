@@ -32,6 +32,7 @@ namespace MKTFY.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IMailService _mailService;
         private readonly IUserService _userService;
+        private readonly IPaymentService _paymentService;
 
         /// <summary>
         /// This is the AccountController Constructor which takes in the SignInManager, UserManager (both from Identity Framework), mailService and userService
@@ -40,12 +41,14 @@ namespace MKTFY.Controllers
         /// <param name="userManager"></param>
         /// <param name="mailService"></param>
         /// <param name="userService"></param>
-        public AccountController(SignInManager<User> signinManager, UserManager<User> userManager, IMailService mailService, IUserService userService)
+        /// <param name="paymentService"></param>
+        public AccountController(SignInManager<User> signinManager, UserManager<User> userManager, IMailService mailService, IUserService userService, IPaymentService paymentService)
         {
             _signinManager = signinManager;
             _userManager = userManager;
             _mailService = mailService;
             _userService = userService;
+            _paymentService = paymentService;
         }
 
         /// <summary>
@@ -114,10 +117,15 @@ namespace MKTFY.Controllers
         /// <response code="500">Server failure, unknown reason</response> 
         [HttpPost("register")]
         public async Task<ActionResult<LoginResponseVM>> Register([FromBody] RegisterVM data)
-        {  
-            //Register User
-            IdentityResult result = await _userService.RegisterUser(data);
+        {
+            //Create Stripe User for payment options
+            var stripeCustomer = await _paymentService.CreateStripeCustomer(data);
+            if (stripeCustomer == null)
+                throw new UserNotSavedException("Something went wrong with saving the Stripe customer! please try again");
 
+            //Register User
+            IdentityResult result = await _userService.RegisterUser(data, stripeCustomer.Id);
+            
             // Get the user profile and generate userVM for LoginResponseVM (requires token plus userVM)
             var user = await _userService.GetUserByEmail(data.Email);
             var userVM = new UserVM(user);

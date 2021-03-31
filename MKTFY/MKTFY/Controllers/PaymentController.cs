@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MKTFY.Models.ViewModels;
+using MKTFY.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,18 @@ namespace MKTFY.Controllers
     [ApiController]
     public class PaymentController : ControllerBase
     {
+        private readonly IPaymentService _paymentService;
+        public PaymentController(IPaymentService paymentService)
+        {
+            _paymentService = paymentService;
+        }
+        public async Task<ActionResult> CreateStripeSetupIntent(string userId)
+        {
+            var result = await _paymentService.CreateStripeSetupIntent(userId);
+
+            return Ok();
+        }
+
         public async Task CreateConnectedAccount([FromBody] ConnectedAccountAddVM data)
         {
             // create an express account in the PaymentService class
@@ -20,6 +33,8 @@ namespace MKTFY.Controllers
 
             // Connect Onboarding require 'return url' and 'refresh url'
         }
+
+
 
        // public async Task<ClientSecret> CreatePaymentIntent()
        // {

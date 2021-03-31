@@ -65,6 +65,10 @@ namespace MKTFY.Models.Entities
         [Required]
         public string Address { get; set; }
         /// <summary>
+        /// Stripe Customer Id Field
+        /// </summary>
+        public string StripeCustomerId { get; set; }
+        /// <summary>
         /// Listings Field for the Many-To-One relationship with Listings
         /// </summary>       
         public ICollection<Listing> Listing { get; set; }

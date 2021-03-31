@@ -30,8 +30,9 @@ namespace MKTFY.Services.Interfaces
         /// Register User (requires RegisterVM with info)
         /// </summary>
         /// <param name="data"></param>
+        /// <param name="stripeCustomerId"></param>
         /// <returns></returns>
-        public Task<IdentityResult> RegisterUser(RegisterVM data);
+        public Task<IdentityResult> RegisterUser(RegisterVM data, string stripeCustomerId);
         /// <summary>
         /// Get Access Token (requires LoginVM info)
         /// </summary>

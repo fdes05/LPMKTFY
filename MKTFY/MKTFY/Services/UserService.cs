@@ -88,14 +88,16 @@ namespace MKTFY.Services
         /// Register User which takes in a RegisterVM with user info
         /// </summary>
         /// <param name="data"></param>
+        /// <param name="stripeCustomerId"></param>
         /// <returns></returns>
-        public async Task<IdentityResult> RegisterUser(RegisterVM data)
+        public async Task<IdentityResult> RegisterUser(RegisterVM data, string stripeCustomerId)
         {
 #pragma warning disable IDE0017 // Simplify object initialization
             var user = new User();
 #pragma warning restore IDE0017 // Simplify object initialization
                                // Create user and add info from user registration
             user.UserName = data.Email;
+            user.StripeCustomerId = stripeCustomerId;
             user.Email = data.Email;
             user.FirstName = data.FirstName;
             user.LastName = data.LastName;
