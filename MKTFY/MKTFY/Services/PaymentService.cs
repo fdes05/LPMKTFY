@@ -47,5 +47,10 @@ namespace MKTFY.Services
 
             return intent.ClientSecret;
         }
+
+        Task<ActionResult> IPaymentService.CreateStripeSetupIntent(string userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
