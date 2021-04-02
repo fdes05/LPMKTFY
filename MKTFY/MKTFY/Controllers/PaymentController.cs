@@ -18,6 +18,7 @@ namespace MKTFY.Controllers
         {
             _paymentService = paymentService;
         }
+        [HttpPatch("createcard")]
         public async Task<ActionResult> CreateStripeSetupIntent(string userId)
         {
             var result = await _paymentService.CreateStripeSetupIntent(userId);

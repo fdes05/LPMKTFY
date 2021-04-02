@@ -146,17 +146,20 @@ namespace MKTFY
 
            // app.UseHttpsRedirection();
 
-            app.UseRouting();
-
-            // this is to add swagger to our app (localhost:33000/swagger/v1/swagger.json)
-            app.UseSwagger();
+            app.UseRouting();            
 
             // this is to add the swagger UI so it looks nicer and we can add swagger comments to our endpoints
             // UI can be found at 'localhost:33000/swagger/index.html'
-            app.UseSwaggerUI(c =>
+            // the if-statement is there to make sure we do not enable Swagger in Production environment.
+            if (!env.IsProduction())
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MKTFY API V1");
-            });
+                // this is to add swagger to our app (localhost:33000/swagger/v1/swagger.json)
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MKTFY API V1");
+                });
+            }            
 
             // Global error handler
             app.UseMiddleware<GlobalExceptionHandler>();

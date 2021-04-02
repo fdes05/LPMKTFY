@@ -11,6 +11,10 @@
     <DocumentationFile>C:\Users\Fab\source\repos\MKTFY\LPQ121_MKTFY\MKTFY\MKTFY\MKTFY.xml</DocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Users\Fab\source\repos\MKTFY\LPQ121_MKTFY\MKTFY\MKTFY\MKTFY.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>

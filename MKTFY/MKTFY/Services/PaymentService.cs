@@ -41,6 +41,10 @@ namespace MKTFY.Services
             var options = new SetupIntentCreateOptions
             {
                 Customer = "{stripeCustomerId}",
+                PaymentMethodTypes = new List<string> {
+                    "card"
+                    },
+                Usage = "on_session"
             };
             var service = new SetupIntentService();
             var intent = service.Create(options);
