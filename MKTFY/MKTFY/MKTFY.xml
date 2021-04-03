@@ -9,7 +9,7 @@
             This is the Account controller
             </summary>
         </member>
-        <member name="M:MKTFY.Controllers.AccountController.#ctor(Microsoft.AspNetCore.Identity.SignInManager{MKTFY.Models.Entities.User},Microsoft.AspNetCore.Identity.UserManager{MKTFY.Models.Entities.User},MKTFY.Services.Interfaces.IMailService,MKTFY.Services.Interfaces.IUserService)">
+        <member name="M:MKTFY.Controllers.AccountController.#ctor(Microsoft.AspNetCore.Identity.SignInManager{MKTFY.Models.Entities.User},Microsoft.AspNetCore.Identity.UserManager{MKTFY.Models.Entities.User},MKTFY.Services.Interfaces.IMailService,MKTFY.Services.Interfaces.IUserService,MKTFY.Services.Interfaces.IPaymentService)">
             <summary>
             This is the AccountController Constructor which takes in the SignInManager, UserManager (both from Identity Framework), mailService and userService
             </summary>
@@ -17,6 +17,7 @@
             <param name="userManager"></param>
             <param name="mailService"></param>
             <param name="userService"></param>
+            <param name="paymentService"></param>
         </member>
         <member name="M:MKTFY.Controllers.AccountController.Login(MKTFY.Models.ViewModels.LoginVM)">
             <summary>
@@ -445,11 +446,12 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:MKTFY.Services.Interfaces.IUserService.RegisterUser(MKTFY.Models.ViewModels.RegisterVM)">
+        <member name="M:MKTFY.Services.Interfaces.IUserService.RegisterUser(MKTFY.Models.ViewModels.RegisterVM,System.String)">
             <summary>
             Register User (requires RegisterVM with info)
             </summary>
             <param name="data"></param>
+            <param name="stripeCustomerId"></param>
             <returns></returns>
         </member>
         <member name="M:MKTFY.Services.Interfaces.IUserService.GetAccessToken(MKTFY.Models.ViewModels.LoginVM)">
@@ -573,11 +575,12 @@
             <param name="login"></param>
             <returns></returns>
         </member>
-        <member name="M:MKTFY.Services.UserService.RegisterUser(MKTFY.Models.ViewModels.RegisterVM)">
+        <member name="M:MKTFY.Services.UserService.RegisterUser(MKTFY.Models.ViewModels.RegisterVM,System.String)">
             <summary>
             Register User which takes in a RegisterVM with user info
             </summary>
             <param name="data"></param>
+            <param name="stripeCustomerId"></param>
             <returns></returns>
         </member>
         <member name="M:MKTFY.Services.UserService.VerifyEmail(System.String)">

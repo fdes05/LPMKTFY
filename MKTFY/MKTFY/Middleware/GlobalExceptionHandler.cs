@@ -56,7 +56,7 @@ namespace MKTFY.Middleware
                         break;
                     default: // Some unknown error. We want to prevent generic 500 errors from being returned.
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        errorMessage = "We're sorry, you're request could not be completed";
+                        errorMessage = "We are sorry, your request could not be completed";
                         break;
                 }
 

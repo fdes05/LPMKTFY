@@ -221,6 +221,11 @@
             Address Field
             </summary>
         </member>
+        <member name="P:MKTFY.Models.Entities.User.StripeCustomerId">
+            <summary>
+            Stripe Customer Id Field
+            </summary>
+        </member>
         <member name="P:MKTFY.Models.Entities.User.Listing">
             <summary>
             Listings Field for the Many-To-One relationship with Listings
