@@ -18,7 +18,7 @@ namespace MKTFY.Controllers
         {
             _paymentService = paymentService;
         }
-        [HttpPatch("createcard")]
+        [HttpPost("createcard")]
         public async Task<ActionResult> CreateStripeSetupIntent(string userId)
         {
             var result = await _paymentService.CreateStripeSetupIntent(userId);
@@ -26,14 +26,14 @@ namespace MKTFY.Controllers
             return Ok();
         }
 
-        public async Task CreateConnectedAccount([FromBody] ConnectedAccountAddVM data)
-        {
-            // create an express account in the PaymentService class
+        //public async Task CreateConnectedAccount([FromBody] ConnectedAccountAddVM data)
+        //{
+        //    // create an express account in the PaymentService class
 
-            // MIGHT BE OPTIONAL: do account link with 'redirect link' in PaymentService class
+        //    // MIGHT BE OPTIONAL: do account link with 'redirect link' in PaymentService class
 
-            // Connect Onboarding require 'return url' and 'refresh url'
-        }
+        //    // Connect Onboarding require 'return url' and 'refresh url'
+        //}
 
 
 
