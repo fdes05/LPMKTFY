@@ -19,7 +19,7 @@ namespace MKTFY.Services
         }
         public async Task<Customer> CreateStripeCustomer(RegisterVM data)
         {
-            StripeConfiguration.ApiKey = "pk_test_51IW6QiLk43ipxPsRdgDN7ILywr30zGCGKPnpAbAtX5ASbsGpvBNe0PWXZp5u4Jr3QtQJOL6xX29mtHQWpI5zj89J00nuV5k8ba";
+            StripeConfiguration.ApiKey = "sk_test_51IW6QiLk43ipxPsRBKVoI1zb9UfHmn5WMBzd4ceYgidrkZCS9mAk42HiBUfSEJizVHJhGPSxkPfgGI261qroymwa00JAejLKQx";
 
             var options = new CustomerCreateOptions
             {
@@ -35,12 +35,14 @@ namespace MKTFY.Services
 
         public async Task<string> CreateStripeSetupIntent(string userId)
         {
+            StripeConfiguration.ApiKey = "sk_test_51IW6QiLk43ipxPsRBKVoI1zb9UfHmn5WMBzd4ceYgidrkZCS9mAk42HiBUfSEJizVHJhGPSxkPfgGI261qroymwa00JAejLKQx";
+
             var user = await _userService.GetUserById(userId);
             var stripeCustomerId = user.StripeCustomerId;
 
             var options = new SetupIntentCreateOptions
             {
-                Customer = "{stripeCustomerId}",
+                Customer =  "{{stripeCustomerId}}",
                 PaymentMethodTypes = new List<string> {
                     "card"
                     },
