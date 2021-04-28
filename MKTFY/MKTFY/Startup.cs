@@ -42,7 +42,9 @@ namespace MKTFY
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-        }               
+        }
+
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         /// <summary>
@@ -51,8 +53,22 @@ namespace MKTFY
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            // This is to add CORS (Enable Cross-Origin-Requests) for web requests in the dev environment
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("http://localhost:3000/*",
+                                                          "http://localhost:33000/*")
+                                             .AllowAnyOrigin()                                             
+                                             .AllowAnyMethod()
+                                             .AllowAnyHeader();
+                                  });
+            });
+
             // This is to add the DbContext service that uses the 'DefaultConnection' string for the database
-            // The 'DefaultConnection' needs to be added to the 'appsetting.json' as well as our Docker compsoe
+            // The 'DefaultConnection' needs to be added to the 'appsetting.json' as well as our Docker compose
             // won't be up to use the enviroment variable we've defined
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"),
@@ -127,7 +143,7 @@ namespace MKTFY
 
             services.AddScoped<IFaqService, FaqService>();
 
-            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IPaymentService, PaymentService>();          
 
         }
 
@@ -144,9 +160,15 @@ namespace MKTFY
                 app.UseDeveloperExceptionPage();
             }
 
-           // app.UseHttpsRedirection();
+            // Global error handler
+            app.UseMiddleware<GlobalExceptionHandler>();
 
-            app.UseRouting();            
+            // app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            // this is to use CORS (enable cross-origin-requests) for web api requests in dev as enable above
+            app.UseCors(MyAllowSpecificOrigins);
 
             // this is to add the swagger UI so it looks nicer and we can add swagger comments to our endpoints
             // UI can be found at 'localhost:33000/swagger/index.html'
@@ -161,8 +183,7 @@ namespace MKTFY
                 });
             }            
 
-            // Global error handler
-            app.UseMiddleware<GlobalExceptionHandler>();
+            
 
             app.UseAuthentication();
             app.UseAuthorization();

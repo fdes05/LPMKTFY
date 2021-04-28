@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MKTFY.Models.ViewModels;
 using MKTFY.Services.Interfaces;
@@ -6,9 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Cors;
 
 namespace MKTFY.Controllers
 {
+    //[EnableCors(origins: "*", headers: "*", methods: "*")]
     [Route("api/[controller]")]
     [ApiController]
     public class PaymentController : ControllerBase
@@ -18,12 +21,27 @@ namespace MKTFY.Controllers
         {
             _paymentService = paymentService;
         }
-        [HttpPost("createcard")]
-        public async Task<ActionResult> CreateStripeSetupIntent(string userId)
+
+        [HttpPost("stripesk")]
+        public async Task<ClientSecretVM> GetStripeClientSecret([FromBody] GetClientSecretVM data)
         {
-            var result = await _paymentService.CreateStripeSetupIntent(userId);
+            var result = await _paymentService.CreateStripeSetupIntent(data.UserId);
+
+            return new ClientSecretVM(result);
+        }
+
+        [HttpPost("savepaymentmethod")]
+        public async Task<ActionResult> SavePaymentMethodId([FromBody] GetPaymentMethodIdVM data)
+        {
+            var result = await _paymentService.SavePaymentMethodId(data.UserId, data.PaymentMethodId);
 
             return Ok();
+        }
+
+        [HttpPatch("create/expressaccount")]
+        public async void CreateExpressAccount([FromRoute] string userId)
+        {
+
         }
 
         //public async Task CreateConnectedAccount([FromBody] ConnectedAccountAddVM data)
@@ -37,10 +55,10 @@ namespace MKTFY.Controllers
 
 
 
-       // public async Task<ClientSecret> CreatePaymentIntent()
-       // {
-            // creates payment intent through Stripe API and receives a ClientSecret that needs to be returned to FrontEnd
-      //  }
+        // public async Task<ClientSecret> CreatePaymentIntent()
+        // {
+        // creates payment intent through Stripe API and receives a ClientSecret that needs to be returned to FrontEnd
+        //  }
 
         //[HttpPost("webhook")]
         //public async Task<IActionResult> ProcessWebhookEvent()

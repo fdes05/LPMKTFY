@@ -226,6 +226,11 @@
             Stripe Customer Id Field
             </summary>
         </member>
+        <member name="P:MKTFY.Models.Entities.User.StripePaymentMethodId">
+            <summary>
+            Stripe Customer Payment Method Id Field
+            </summary>
+        </member>
         <member name="P:MKTFY.Models.Entities.User.Listing">
             <summary>
             Listings Field for the Many-To-One relationship with Listings

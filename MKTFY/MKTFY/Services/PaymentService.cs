@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using MKTFY.App.Exceptions;
+using MKTFY.Models.Entities;
 using MKTFY.Models.ViewModels;
 using MKTFY.Services.Interfaces;
 using Stripe;
@@ -12,10 +15,12 @@ namespace MKTFY.Services
     public class PaymentService : IPaymentService
     {
         private readonly IUserService _userService;
+        private readonly UserManager<User> _userManager;
 
-        public PaymentService(IUserService userService)
+        public PaymentService(IUserService userService, UserManager<User> userManager)
         {
             _userService = userService;
+            _userManager = userManager;
         }
         public async Task<Customer> CreateStripeCustomer(RegisterVM data)
         {
@@ -42,7 +47,7 @@ namespace MKTFY.Services
 
             var options = new SetupIntentCreateOptions
             {
-                Customer =  "{{stripeCustomerId}}",
+                Customer =  stripeCustomerId,
                 PaymentMethodTypes = new List<string> {
                     "card"
                     },
@@ -54,9 +59,20 @@ namespace MKTFY.Services
             return intent.ClientSecret;
         }
 
-        Task<ActionResult> IPaymentService.CreateStripeSetupIntent(string userId)
+        public async Task<User> SavePaymentMethodId(string userId, string paymentMethodId)
         {
-            throw new NotImplementedException();
+            var user = await _userService.GetUserById(userId);
+            user.StripePaymentMethodId = paymentMethodId;
+
+            IdentityResult result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {                
+                return user;
+            }
+            else
+            {
+                throw new UserNotSavedException("Something went wrong and user wasn't saved. Please try again.");
+            }
         }
     }
 }
